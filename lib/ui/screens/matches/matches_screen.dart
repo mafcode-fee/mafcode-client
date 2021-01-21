@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:mafcode/ui/screens/matches/api_service.dart';
 
 class MatchesScreen extends StatefulWidget {
   const MatchesScreen({Key key}) : super(key: key);
@@ -12,27 +13,17 @@ class MatchesScreen extends StatefulWidget {
 }
 
 class _MatchesScreenState extends State<MatchesScreen> {
-  final _imageNumber = 10;
-  List<Uint8List> _images;
+  List<dynamic> _images;
 
-  Future<Uint8List> _downloadAnImage({int waitTime}) async {
-    waitTime ??= Random().nextInt(10);
-    await Future.delayed(Duration(milliseconds: waitTime * 1000));
-    final bytes = await Dio().get<List<int>>(
-      "https://thispersondoesnotexist.com/image",
-      options: Options(responseType: ResponseType.bytes),
-    );
-    return Uint8List.fromList(bytes.data);
+  Future<dynamic> _searchRequest() async {
+    return ApiService.searchRequest(null);
   }
 
   @override
   void initState() {
     super.initState();
     Future.microtask(() async {
-      final images = <Uint8List>[];
-      for (var _ in Iterable.generate(_imageNumber)) {
-        images.add(await _downloadAnImage(waitTime: 0));
-      }
+      final images = await _searchRequest();
       setState(() {
         _images = images;
       });
@@ -50,15 +41,35 @@ class _MatchesScreenState extends State<MatchesScreen> {
               child: CircularProgressIndicator(),
             )
           : GridView.builder(
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
-              itemCount: _imageNumber,
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2,
+                childAspectRatio: 2 / 3,
+              ),
+              itemCount: _images.length,
               itemBuilder: (context, index) {
                 return Card(
                   clipBehavior: Clip.antiAlias,
                   elevation: 4,
                   margin: const EdgeInsets.all(24),
-                  child: Image.memory(_images[index]),
+                  child: Stack(
+                    fit: StackFit.expand,
+                    children: [
+                      Image.network(
+                        _images[index]['img_url'],
+                        fit: BoxFit.cover,
+                      ),
+                      Align(
+                        alignment: Alignment.bottomCenter,
+                        child: Text(
+                          _images[index]['name'],
+                          style: TextStyle(
+                            fontSize: 25,
+                            color: Colors.white,
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
                 );
               },
             ),
