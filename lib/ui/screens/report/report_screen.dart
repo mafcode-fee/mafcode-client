@@ -3,11 +3,13 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ReportScreen extends HookWidget {
-  const ReportScreen({Key key}) : super(key: key);
+  final ReportType reportType;
+  const ReportScreen(this.reportType, {Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -3,6 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/all.dart';
 import 'package:mafcode/core/di/providers.dart';
+import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/screens/matches/matches_screen.dart';
 
@@ -31,14 +32,24 @@ class HomePage extends StatelessWidget {
               icon: Icons.emoji_people_rounded,
               color: Colors.red,
               onTap: () {
-                Navigator.of(context).pushNamed(Routes.reportScreen);
+                Navigator.of(context).pushNamed(
+                  Routes.reportScreen,
+                  arguments:
+                      ReportScreenArguments(reportType: ReportType.FOUND),
+                );
               },
             ),
             HomeCard(
               lable: "Report Missing",
               icon: Icons.search_rounded,
               color: Colors.purple,
-              onTap: () {},
+              onTap: () {
+                Navigator.of(context).pushNamed(
+                  Routes.reportScreen,
+                  arguments:
+                      ReportScreenArguments(reportType: ReportType.MISSING),
+                );
+              },
             ),
           ],
         ),
