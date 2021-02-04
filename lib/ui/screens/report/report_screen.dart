@@ -53,8 +53,41 @@ class ReportScreen extends HookWidget {
                 ],
               ),
               onPressed: () async {
-                final pickedFile =
-                    await picker.getImage(source: ImageSource.gallery);
+                final pickedFile = await showDialog(
+                  context: context,
+                  builder: (context) => Dialog(
+                    child: Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        children: [
+                          Text("Pick Image from"),
+                          Spacer(),
+                          FlatButton(
+                            onPressed: () async {
+                              Navigator.of(context).pop(
+                                await picker.getImage(
+                                    source: ImageSource.gallery),
+                              );
+                            },
+                            child: Text("Gallery"),
+                            textColor: Colors.blueAccent,
+                          ),
+                          FlatButton(
+                            onPressed: () async {
+                              Navigator.of(context).pop(
+                                await picker.getImage(
+                                    source: ImageSource.camera),
+                              );
+                            },
+                            child: Text("Camera"),
+                            textColor: Colors.blueAccent,
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+
                 if (pickedFile != null) imageFile.value = File(pickedFile.path);
               },
             ),
