@@ -13,57 +13,41 @@ import 'package:mafcode/core/network/api.dart';
 const IP = "http://10.0.2.2:5000";
 
 class MatchesScreen extends StatefulWidget {
-  final File file;
-  const MatchesScreen({Key key, @required this.file}) : super(key: key);
+  final String reportId;
+  const MatchesScreen({Key key, @required this.reportId}) : super(key: key);
 
   @override
   _MatchesScreenState createState() => _MatchesScreenState();
 }
 
 class _MatchesScreenState extends State<MatchesScreen> {
-  List<dynamic> _images;
-
-  Future<dynamic> _searchRequest() async {
-    final formdata = FormData.fromMap({
-      'image': await MultipartFile.fromFile(widget.file.path,
-          filename: widget.file.path.split("/").last)
-    });
-    final response = await Dio().post("$IP/search", data: formdata);
-    return response.data;
-  }
-
   @override
   void initState() {
     super.initState();
-    Future.microtask(() async {
-      final images = await _searchRequest();
-      setState(() {
-        _images = images;
-      });
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Matches"),
-      ),
-      body: _images == null
-          ? Center(
-              child: CircularProgressIndicator(),
-            )
-          : GridView.builder(
-              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 2 / 3,
-              ),
-              itemCount: _images.length,
-              itemBuilder: (context, index) {
-                return Container();
-              },
-            ),
-    );
+    // return Scaffold(
+    //   appBar: AppBar(
+    //     title: Text("Matches"),
+    //   ),
+    //   body: _images == null
+    //       ? Center(
+    //           child: CircularProgressIndicator(),
+    //         )
+    //       : GridView.builder(
+    //           gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+    //             crossAxisCount: 2,
+    //             childAspectRatio: 2 / 3,
+    //           ),
+    //           itemCount: _images.length,
+    //           itemBuilder: (context, index) {
+    //             return Container();
+    //           },
+    //         ),
+    // );
+    return Scaffold();
   }
 }
 

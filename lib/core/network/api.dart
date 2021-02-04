@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:meta/meta.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:retrofit/retrofit.dart';
@@ -15,10 +18,11 @@ abstract class Api {
   Future<List<Report>> getAllReports();
 
   @POST("/reports/{reportType}")
-  @protected
-  Future<Report> createReport(
-    @Path() String reportType,
-    @Body() Report report,
+  @MultiPart()
+  Future<Report> createReportJsonString(
+    @Path("reportType") String reportTypeString,
+    @Part(name: "image") File image,
+    @Part(name: "payload") String reportJsonString,
   );
 
   @GET("/report/{reportId}")
@@ -31,9 +35,20 @@ abstract class Api {
 extension ApiExt on Api {
   String getImageUrlFromId(String imageId) => "$baseUrl/img/$imageId";
 
-  Future<Report> createMissingReport(@Body() Report report) =>
-      createReport("missing", report);
+  Future<Report> createReport(
+    ReportType reportType,
+    Report report,
+    File image,
+  ) =>
+      createReportJsonString(
+        reportType.lowerCaseString,
+        image,
+        json.encode(report.toJson()),
+      );
 
-  Future<Report> createFoundReport(@Body() Report report) =>
-      createReport("found", report);
+  Future<Report> createMissingReport(Report report, File image) =>
+      createReport(ReportType.MISSING, report, image);
+
+  Future<Report> createFoundReport(Report report, File image) =>
+      createReport(ReportType.FOUND, report, image);
 }

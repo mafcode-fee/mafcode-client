@@ -9,7 +9,11 @@ enum ReportType {
   FOUND
 }
 
-@JsonSerializable()
+extension ReportTypeExt on ReportType {
+  String get lowerCaseString => this.toString().split(".").last.toLowerCase();
+}
+
+@JsonSerializable(includeIfNull: false)
 class Report {
   final String id;
   @JsonKey(name: "report_type")
@@ -25,7 +29,7 @@ class Report {
   final String clothings;
   final String notes;
 
-  Report(
+  Report({
     this.id,
     this.reportType,
     this.matchedPerson,
@@ -35,7 +39,7 @@ class Report {
     this.age,
     this.clothings,
     this.notes,
-  );
+  });
 
   factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
   Map<String, dynamic> toJson() => _$ReportToJson(this);
