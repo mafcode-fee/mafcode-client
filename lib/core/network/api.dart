@@ -29,7 +29,7 @@ abstract class Api {
 }
 
 extension ApiExt on Api {
-  String getImageUrlFromId(String imageId) => "$baseUrl/$imageId";
+  String getImageUrlFromId(String imageId) => "$baseUrl/img/$imageId";
 
   Future<Report> createMissingReport(@Body() Report report) =>
       createReport("missing", report);

@@ -4,6 +4,11 @@ import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/all.dart';
+import 'package:mafcode/core/di/providers.dart';
+import 'package:mafcode/core/models/report.dart';
+import 'package:mafcode/core/network/api.dart';
 
 const IP = "http://10.0.2.2:5000";
 
@@ -55,32 +60,51 @@ class _MatchesScreenState extends State<MatchesScreen> {
               ),
               itemCount: _images.length,
               itemBuilder: (context, index) {
-                return Card(
-                  clipBehavior: Clip.antiAlias,
-                  elevation: 4,
-                  margin: const EdgeInsets.all(24),
-                  child: Stack(
-                    fit: StackFit.expand,
-                    children: [
-                      Image.network(
-                        IP + _images[index]['img_url'],
-                        fit: BoxFit.cover,
-                      ),
-                      Align(
-                        alignment: Alignment.bottomCenter,
-                        child: Text(
-                          _images[index]['name'],
-                          style: TextStyle(
-                            fontSize: 25,
-                            color: Colors.white,
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                );
+                return Container();
               },
             ),
+    );
+  }
+}
+
+class MatchReportCard extends HookWidget {
+  final Report report;
+  final EdgeInsets margin;
+  final bool showName;
+  const MatchReportCard({
+    Key key,
+    @required this.report,
+    this.margin = const EdgeInsets.all(24),
+    this.showName = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final api = useProvider(apiProvider);
+    return Card(
+      clipBehavior: Clip.antiAlias,
+      elevation: 4,
+      margin: margin,
+      child: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.network(
+            api.getImageUrlFromId(report.photoId),
+            fit: BoxFit.cover,
+          ),
+          if (showName)
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Text(
+                report.name,
+                style: TextStyle(
+                  fontSize: 25,
+                  color: Colors.white,
+                ),
+              ),
+            )
+        ],
+      ),
     );
   }
 }
