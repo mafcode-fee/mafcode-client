@@ -52,7 +52,7 @@ class ReportScreen extends HookWidget {
               ),
               onPressed: () async {
                 final pickedFile =
-                    await picker.getImage(source: ImageSource.camera);
+                    await picker.getImage(source: ImageSource.gallery);
                 if (pickedFile != null) imageFile.value = File(pickedFile.path);
               },
             ),
@@ -101,7 +101,10 @@ class ReportScreen extends HookWidget {
             textColor: Colors.white,
             child: Text("Report"),
             onPressed: () {
-              Navigator.of(context).pushReplacementNamed(Routes.matchesScreen);
+              Navigator.of(context).pushReplacementNamed(Routes.matchesScreen,
+                  arguments: MatchesScreenArguments(
+                    file: imageFile.value,
+                  ));
             },
           ),
         ],

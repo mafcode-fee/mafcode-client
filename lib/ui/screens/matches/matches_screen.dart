@@ -1,12 +1,15 @@
+import 'dart:io';
 import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-import 'package:mafcode/ui/screens/matches/api_service.dart';
+
+const IP = "http://10.0.2.2:5000";
 
 class MatchesScreen extends StatefulWidget {
-  const MatchesScreen({Key key}) : super(key: key);
+  final File file;
+  const MatchesScreen({Key key, @required this.file}) : super(key: key);
 
   @override
   _MatchesScreenState createState() => _MatchesScreenState();
@@ -16,7 +19,12 @@ class _MatchesScreenState extends State<MatchesScreen> {
   List<dynamic> _images;
 
   Future<dynamic> _searchRequest() async {
-    return ApiService.searchRequest(null);
+    final formdata = FormData.fromMap({
+      'image': await MultipartFile.fromFile(widget.file.path,
+          filename: widget.file.path.split("/").last)
+    });
+    final response = await Dio().post("$IP/search", data: formdata);
+    return response.data;
   }
 
   @override
@@ -55,7 +63,7 @@ class _MatchesScreenState extends State<MatchesScreen> {
                     fit: StackFit.expand,
                     children: [
                       Image.network(
-                        _images[index]['img_url'],
+                        IP + _images[index]['img_url'],
                         fit: BoxFit.cover,
                       ),
                       Align(

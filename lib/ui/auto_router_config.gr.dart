@@ -5,6 +5,7 @@
 // **************************************************************************
 
 // ignore_for_file: public_member_api_docs
+import 'dart:io';
 
 import 'package:auto_route/auto_route.dart';
 import 'package:flutter/material.dart';
@@ -58,10 +59,25 @@ class AutoRouterConfig extends RouterBase {
       );
     },
     MatchesScreen: (data) {
+      final args = data.getArgs<MatchesScreenArguments>(nullOk: false);
       return MaterialPageRoute<dynamic>(
-        builder: (context) => const MatchesScreen(),
+        builder: (context) => MatchesScreen(
+          key: args.key,
+          file: args.file,
+        ),
         settings: data,
       );
     },
   };
+}
+
+/// ************************************************************************
+/// Arguments holder classes
+/// *************************************************************************
+
+/// MatchesScreen arguments holder class
+class MatchesScreenArguments {
+  final Key key;
+  final File file;
+  MatchesScreenArguments({this.key, @required this.file});
 }
