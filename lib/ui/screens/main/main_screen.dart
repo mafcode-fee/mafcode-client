@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mafcode/ui/screens/main/home/home_page.dart';
+
+import 'map/map_page.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key key}) : super(key: key);
@@ -29,6 +30,7 @@ class _MainScreenState extends State<MainScreen> {
         centerTitle: true,
       ),
       body: PageView(
+        physics: NeverScrollableScrollPhysics(),
         controller: _pageController,
         onPageChanged: (newIndex) {
           setState(() {
@@ -37,7 +39,7 @@ class _MainScreenState extends State<MainScreen> {
         },
         children: [
           HomePage(),
-          _PlaceHolder(text: "Statistics"),
+          MapSample(),
           _PlaceHolder(text: "Notifications"),
           _PlaceHolder(text: "Profile"),
         ],
@@ -61,8 +63,8 @@ class _MainScreenState extends State<MainScreen> {
             label: "Home",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.insert_chart_outlined),
-            label: "Statistics",
+            icon: Icon(Icons.map),
+            label: "Map",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.notifications),

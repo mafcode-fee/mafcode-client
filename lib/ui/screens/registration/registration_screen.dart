@@ -1,8 +1,8 @@
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
 import 'package:validators/validators.dart';
-import 'package:dio/dio.dart';
-import 'package:mafcode/ui/auto_router_config.gr.dart';
 
 class RegistrationScreen extends StatefulWidget {
   @override
@@ -36,8 +36,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.dispose();
   }
 
-  checkRegistrationInput(String firstName, String lastName, String email,
-      String password, String confirmedPassword) {
+  checkRegistrationInput(String firstName, String lastName, String email, String password, String confirmedPassword) {
     bool correctEmail = isEmail(email);
     bool correctPassword = equals(password, confirmedPassword);
     bool passwordLength = isLength(
@@ -55,8 +54,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       return 000;
   }
 
-  Future registerUser(
-      String firstName, String lastName, String email, String password) async {
+  Future registerUser(String firstName, String lastName, String email, String password) async {
     var options = BaseOptions(
       baseUrl: 'http://13.92.138.210:4000',
     );
@@ -120,7 +118,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   LogoWidget(),
                   SizedBox(height: 48),
                   TextField(
-                    decoration: InputDecoration(labelText: "First Name"),
+                    decoration: InputDecoration(
+                      labelText: "First Name",
+                    ),
                     controller: firstNameTextController,
                   ),
                   TextField(
@@ -166,27 +166,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             _showMyDialog("The two passwords don't match");
                             break;
                           case 205:
-                            _showMyDialog(
-                                "Please enter a password that is between 5 and 30 characters long");
+                            _showMyDialog("Please enter a password that is between 5 and 30 characters long");
                             break;
                           case 000:
                             firstName = firstNameTextController.text;
                             lastName = lastNameTextController.text;
                             email = emailTextController.text;
                             password = passwordTextController.text;
-                            Map response = await registerUser(
-                                firstName, lastName, email, password);
+                            Map response = await registerUser(firstName, lastName, email, password);
                             if (response["message"] == "User Already Exist")
-                              _showMyDialog(
-                                  "This email already exists, please enter a different email");
-                            else if (response["message"] ==
-                                "User added sucessfully") {
-                              _showMyDialog(
-                                  "Registeration Done Successfully, Please login with your information",
+                              _showMyDialog("This email already exists, please enter a different email");
+                            else if (response["message"] == "User added sucessfully") {
+                              _showMyDialog("Registeration Done Successfully, Please login with your information",
                                   success: true);
                               Future.delayed(Duration(milliseconds: 3000), () {
-                                Navigator.of(context)
-                                    .pushReplacementNamed(Routes.loginScreen);
+                                Navigator.of(context).pushReplacementNamed(Routes.loginScreen);
                               });
                             }
                             break;

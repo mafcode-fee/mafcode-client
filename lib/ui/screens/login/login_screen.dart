@@ -1,13 +1,12 @@
-import 'package:auto_route/auto_route_annotations.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 //import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
-import 'package:http/http.dart' as http;
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
-class LoginScreen extends StatefulWidget {
+import '../../auto_router_config.gr.dart';
 
+class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
 
   @override
@@ -19,14 +18,10 @@ class _LoginScreenState extends State<LoginScreen> {
   String email;
   String password;
 
-
   Dio dio = new Dio();
-  Future postData() async{
+  Future postData() async {
     final String url = 'http://13.92.138.210:4000/login';
-    var response = await dio.post(url,data: {
-      "email": email,
-      "password":password
-    });
+    var response = await dio.post(url, data: {"email": email, "password": password});
     return response.data;
 //  post() async{
 //    final uri = 'http://13.92.138.210:4000/login';
@@ -39,10 +34,8 @@ class _LoginScreenState extends State<LoginScreen> {
 //      body: map,
 //    );
 //  }
-
-
-
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,37 +60,43 @@ class _LoginScreenState extends State<LoginScreen> {
                 decoration: InputDecoration(labelText: "Password"),
               ),
               SizedBox(height: 24),
-              Align(
-                alignment: Alignment.centerRight,
-                child: RaisedButton(
-                  color: Theme.of(context).primaryColor,
-                  textColor: Colors.white,
-                  child: Text("Login"),
-                  onPressed: () async{
-                    setState(() {
-                      showSpinner= true;
-                    });
-                    print('Posting data...');
-                    try {
-                      final logUser= await postData().then((value) {
-                        print(value);
-                      });
-                      if(logUser != null){
-                        Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
-                      }
+              Row(
+                children: [
+                  TextButton(
+                    child: Text("Register"),
+                    onPressed: () async {
+                      Navigator.of(context).pushReplacementNamed(Routes.registrationScreen);
+                    },
+                  ),
+                  Spacer(),
+                  RaisedButton(
+                    color: Theme.of(context).primaryColor,
+                    textColor: Colors.white,
+                    child: Text("Login"),
+                    onPressed: () async {
                       setState(() {
-                        showSpinner=false;
+                        showSpinner = true;
                       });
-                    } on Exception catch (e) {
-                      print(e);
-                    }
+                      print('Posting data...');
+                      try {
+                        final logUser = await postData().then((value) {
+                          print(value);
+                        });
+                        if (logUser != null) {
+                          Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
+                        }
+                        setState(() {
+                          showSpinner = false;
+                        });
+                      } on Exception catch (e) {
+                        print(e);
+                      }
 //                  await post().then((value){
 //                    print(value);
 //                  });
-
-
-                  },
-                ),
+                    },
+                  ),
+                ],
               )
             ],
           ),

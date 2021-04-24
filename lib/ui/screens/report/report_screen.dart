@@ -7,10 +7,7 @@ import 'package:hooks_riverpod/all.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
-import 'package:mafcode/ui/auto_router_config.gr.dart';
-import 'package:mafcode/ui/screens/report/report_screen_store.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:mobx/mobx.dart';
 
 class ReportScreen extends HookWidget {
   final ReportType reportType;
@@ -38,8 +35,7 @@ class ReportScreen extends HookWidget {
               height: 200,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color:
-                    imageFile.value != null ? null : Colors.blueGrey.shade100,
+                color: imageFile.value != null ? null : Colors.blueGrey.shade100,
                 border: Border.all(color: Colors.grey),
                 shape: BoxShape.circle,
               ),
@@ -77,8 +73,7 @@ class ReportScreen extends HookWidget {
                             FlatButton(
                               onPressed: () async {
                                 Navigator.of(context).pop(
-                                  await picker.getImage(
-                                      source: ImageSource.gallery),
+                                  await picker.getImage(source: ImageSource.gallery),
                                 );
                               },
                               child: Text("Gallery"),
@@ -87,8 +82,7 @@ class ReportScreen extends HookWidget {
                             FlatButton(
                               onPressed: () async {
                                 Navigator.of(context).pop(
-                                  await picker.getImage(
-                                      source: ImageSource.camera),
+                                  await picker.getImage(source: ImageSource.camera),
                                 );
                               },
                               child: Text("Camera"),
@@ -100,8 +94,7 @@ class ReportScreen extends HookWidget {
                     ),
                   );
 
-                  if (pickedFile != null)
-                    imageFile.value = File(pickedFile.path);
+                  if (pickedFile != null) imageFile.value = File(pickedFile.path);
                 },
               ),
             ),
@@ -112,7 +105,6 @@ class ReportScreen extends HookWidget {
             ),
             const SizedBox(height: 5),
             Row(
-              crossAxisAlignment: CrossAxisAlignment.baseline,
               children: [
                 Expanded(
                   child: TextField(
