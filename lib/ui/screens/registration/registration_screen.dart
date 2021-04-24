@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
+import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:validators/validators.dart';
 
 class RegistrationScreen extends StatefulWidget {
@@ -59,6 +60,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       baseUrl: 'http://13.92.138.210:4000',
     );
     var dio = Dio(options);
+    dio.interceptors.add(PrettyDioLogger());
     var map = new Map<String, dynamic>();
     map['email'] = email;
     map['first_name'] = firstName;
@@ -103,6 +105,9 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: AppBar(
+        title: Text('Registration'),
+      ),
       body: SafeArea(
         child: GestureDetector(
           onTap: () {

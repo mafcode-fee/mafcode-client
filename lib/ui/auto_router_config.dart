@@ -7,8 +7,8 @@ import 'package:mafcode/ui/screens/report/report_screen.dart';
 
 @MaterialAutoRouter(routes: [
   AutoRoute(page: RegistrationScreen),
-  AutoRoute(page: LoginScreen),
-  AutoRoute(page: MainScreen, initial: true),
+  AutoRoute(page: LoginScreen, initial: true),
+  AutoRoute(page: MainScreen),
   AutoRoute(page: ReportScreen),
   AutoRoute(page: MatchesScreen)
 ])
