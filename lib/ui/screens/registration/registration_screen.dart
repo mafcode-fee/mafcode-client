@@ -37,8 +37,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.dispose();
   }
 
-  checkRegistrationInput(String firstName, String lastName, String email,
-      String password, String confirmedPassword) {
+  checkRegistrationInput(String firstName, String lastName, String email, String password, String confirmedPassword) {
     bool correctEmail = isEmail(email);
     bool correctPassword = equals(password, confirmedPassword);
     bool passwordLength = isLength(
@@ -56,8 +55,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       return 000;
   }
 
-  Future registerUser(
-      String firstName, String lastName, String email, String password) async {
+  Future registerUser(String firstName, String lastName, String email, String password) async {
     var options = BaseOptions(
       baseUrl: 'http://13.92.138.210:4000',
     );
@@ -167,19 +165,14 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             confirmedPasswordTextController.text);
                         switch (statusCode) {
                           case 104:
-                            showMafcodeDialog(
-                                message: "Please enter a valid email",
-                                title: "Error");
+                            showMafcodeDialog(message: "Please enter a valid email", title: "Error");
                             break;
                           case 204:
-                            showMafcodeDialog(
-                                message: "The two passwords don't match",
-                                title: "Error!");
+                            showMafcodeDialog(message: "The two passwords don't match", title: "Error!");
                             break;
                           case 205:
                             showMafcodeDialog(
-                                message:
-                                    "Please enter a password that is between 5 and 30 characters long",
+                                message: "Please enter a password that is between 5 and 30 characters long",
                                 title: "Error");
                             break;
                           case 000:
@@ -187,23 +180,27 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                             lastName = lastNameTextController.text;
                             email = emailTextController.text;
                             password = passwordTextController.text;
-                            Map response = await registerUser(
-                                firstName, lastName, email, password);
-                            if (response["message"] == "User Already Exist")
-                              showMafcodeDialog(
-                                  message:
-                                      "This email already exists, please enter a different email",
-                                  title: "Error!");
-                            else if (response["message"] ==
-                                "User added sucessfully") {
-                              showMafcodeDialog(
-                                  message:
-                                      "Registeration Done Successfully, Please login with your information",
-                                  title: "Success!");
-                              Future.delayed(Duration(milliseconds: 3000), () {
-                                Navigator.of(context)
-                                    .pushReplacementNamed(Routes.loginScreen);
-                              });
+                            try {
+                              Map response = await registerUser(firstName, lastName, email, password);
+                              if (response["message"] == "User Already Exist")
+                                showMafcodeDialog(
+                                    message: "This email already exists, please enter a different email",
+                                    title: "Error!");
+                              else if (response["message"] == "User added sucessfully") {
+                                showMafcodeDialog(
+                                    message: "Registeration Done Successfully, Please login with your information",
+                                    title: "Success!");
+                                Future.delayed(Duration(milliseconds: 3000), () {
+                                  Navigator.of(context).pushReplacementNamed(Routes.loginScreen);
+                                });
+                              }
+                            } catch (e, stackTracke) {
+                              debugPrintStack(label: e.toString(), stackTrace: stackTracke);
+                              if (e is DioError && e.response != null) {
+                                showMafcodeDialog(message: e.response.data.toString(), title: "Server Error!");
+                              } else {
+                                showMafcodeDialog(message: e.toString(), title: "Error!");
+                              }
                             }
                             break;
                           default:

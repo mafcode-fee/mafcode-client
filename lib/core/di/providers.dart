@@ -9,7 +9,11 @@ import 'package:riverpod/all.dart';
 final dioProvider = Provider<Dio>((_) {
   final dio = Dio();
   if (kDebugMode) {
-    dio.interceptors.add(PrettyDioLogger());
+    dio.interceptors.add(PrettyDioLogger(
+      request: true,
+      requestBody: true,
+      requestHeader: true,
+    ));
   }
   return dio;
 });
