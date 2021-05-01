@@ -29,6 +29,8 @@ abstract class _ReportScreenStoreBase with Store {
   Future<void> postNewReport({
     ReportType reportType,
     String name,
+    double latitude,
+    double longitude,
     String age,
     String clothings,
     String notes,
@@ -39,6 +41,8 @@ abstract class _ReportScreenStoreBase with Store {
       reportType,
       Report(
         name: name,
+        latitude: latitude,
+        longitude: longitude,
         age: double.parse(age).roundToDouble(),
         clothings: clothings,
         notes: notes,

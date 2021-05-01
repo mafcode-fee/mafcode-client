@@ -20,6 +20,10 @@ class Report {
   final ReportType reportType;
   @JsonKey(name: "matched_person")
   final String matchedPerson;
+  @JsonKey(name: "latitude")
+  final double latitude;
+  @JsonKey(name: "longitude")
+  final double longitude;
   @JsonKey(name: "photo_id")
   final String photoId;
   final String name;
@@ -33,6 +37,8 @@ class Report {
     this.id,
     this.reportType,
     this.matchedPerson,
+    this.latitude,
+    this.longitude,
     this.photoId,
     this.name,
     this.lastSeenLocation,

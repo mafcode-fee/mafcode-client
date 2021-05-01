@@ -1,5 +1,5 @@
 import 'dart:io';
-
+import 'package:location/location.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
@@ -8,10 +8,63 @@ import 'package:image_picker/image_picker.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:mafcode/ui/auto_router_config.gr.dart';
 
 class ReportScreen extends HookWidget {
   final ReportType reportType;
   const ReportScreen(this.reportType, {Key key}) : super(key: key);
+
+  Future getLocation() async {
+    Location location = new Location();
+
+    bool _serviceEnabled;
+    PermissionStatus _permissionGranted;
+
+    _serviceEnabled = await location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await location.requestService();
+      if (!_serviceEnabled) {
+        return;
+      }
+    }
+
+    _permissionGranted = await location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        return;
+      }
+    }
+
+    return await location.getLocation();
+  }
+
+  Future<void> showMafcodeDialog({String message, String title}) async {
+    return showDialog<void>(
+      context: useContext(),
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text(title),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Dismess'),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -19,6 +72,8 @@ class ReportScreen extends HookWidget {
     final imageFile = useState<File>(null);
     final store = useProvider(reportScreenStoreProvider);
     final nameController = useTextEditingController();
+    final latitudeController = useTextEditingController();
+    final longitudeController = useTextEditingController();
     final ageController = useTextEditingController();
     final clothingsController = useTextEditingController();
     final notesController = useTextEditingController();
@@ -35,7 +90,8 @@ class ReportScreen extends HookWidget {
               height: 200,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: imageFile.value != null ? null : Colors.blueGrey.shade100,
+                color:
+                    imageFile.value != null ? null : Colors.blueGrey.shade100,
                 border: Border.all(color: Colors.grey),
                 shape: BoxShape.circle,
               ),
@@ -73,7 +129,8 @@ class ReportScreen extends HookWidget {
                             FlatButton(
                               onPressed: () async {
                                 Navigator.of(context).pop(
-                                  await picker.getImage(source: ImageSource.gallery),
+                                  await picker.getImage(
+                                      source: ImageSource.gallery),
                                 );
                               },
                               child: Text("Gallery"),
@@ -82,7 +139,8 @@ class ReportScreen extends HookWidget {
                             FlatButton(
                               onPressed: () async {
                                 Navigator.of(context).pop(
-                                  await picker.getImage(source: ImageSource.camera),
+                                  await picker.getImage(
+                                      source: ImageSource.camera),
                                 );
                               },
                               child: Text("Camera"),
@@ -94,7 +152,8 @@ class ReportScreen extends HookWidget {
                     ),
                   );
 
-                  if (pickedFile != null) imageFile.value = File(pickedFile.path);
+                  if (pickedFile != null)
+                    imageFile.value = File(pickedFile.path);
                 },
               ),
             ),
@@ -103,12 +162,22 @@ class ReportScreen extends HookWidget {
               decoration: InputDecoration(labelText: "Name"),
               controller: nameController,
             ),
-            const SizedBox(height: 5),
+            const SizedBox(height: 10),
+            Text("Location"),
+            // const SizedBox(height: 5),
             Row(
               children: [
                 Expanded(
                   child: TextField(
-                    decoration: InputDecoration(labelText: "Found Address"),
+                    decoration: InputDecoration(labelText: "latitude"),
+                    controller: latitudeController,
+                  ),
+                ),
+                const SizedBox(width: 15),
+                Expanded(
+                  child: TextField(
+                    decoration: InputDecoration(labelText: "longitude"),
+                    controller: longitudeController,
                   ),
                 ),
                 const SizedBox(width: 15),
@@ -121,7 +190,37 @@ class ReportScreen extends HookWidget {
                       Text("GPS"),
                     ],
                   ),
-                  onPressed: () {},
+                  onPressed: () async {
+                    var location = await getLocation();
+                    if (location is! LocationData)
+                      showMafcodeDialog(
+                          message:
+                              "In order to get location automatically, you have to enable location permissions");
+                    latitudeController.text = location.latitude.toString();
+                    longitudeController.text = location.longitude.toString();
+                  },
+                ),
+                const SizedBox(
+                  width: 10,
+                ),
+                RaisedButton(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(MdiIcons.map),
+                      const SizedBox(width: 5),
+                      Text("Map"),
+                    ],
+                  ),
+                  onPressed: () async {
+                    LocationData location = await getLocation();
+                    if (location is! LocationData)
+                      showMafcodeDialog(
+                          message:
+                              "In order to get location automatically, you have to enable location permissions");
+                    else
+                      Navigator.of(context).pushNamed(Routes.mapLocationPicker);
+                  },
                 ),
               ],
             ),
@@ -160,6 +259,8 @@ class ReportScreen extends HookWidget {
                     reportType: reportType,
                     file: imageFile.value,
                     name: nameController.text,
+                    latitude: double.parse(latitudeController.text),
+                    longitude: double.parse(longitudeController.text),
                     age: ageController.text,
                     clothings: clothingsController.text,
                     notes: notesController.text,
