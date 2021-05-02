@@ -80,7 +80,9 @@ class ReportScreen extends HookWidget {
     return Observer(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          title: Text("Report Fonud"),
+          title: Text(reportType == ReportType.FOUND
+              ? "Report Found"
+              : "Report Missing"),
         ),
         body: ListView(
           padding: const EdgeInsets.all(24),
