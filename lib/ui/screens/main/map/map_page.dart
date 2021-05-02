@@ -54,11 +54,15 @@ class MapSampleState extends State<MapSample> {
                   child: CircularProgressIndicator(),
                 );
               }
-              List<dynamic> parsedJson = jsonDecode(snapshot.data);
+              List<dynamic> parsedJson = snapshot.data;
               allMarkers = parsedJson.map((i) {
+                String name = i['name'];
+                int age = i['age'];
                 return Marker(
                   markerId: MarkerId(i['id']),
                   position: LatLng(i['latitude'], i['longitude']),
+                  //infoWindow: InfoWindow(title: 'my name is nagwa'),
+                  infoWindow: InfoWindow(title: ' $name , $age years old'),
                   onTap: () {},
                 );
               }).toList();
