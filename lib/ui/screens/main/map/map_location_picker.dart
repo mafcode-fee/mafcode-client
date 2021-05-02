@@ -20,7 +20,7 @@ class MapLocationPickerState extends State<MapLocationPicker> {
     _kGooglePlex = CameraPosition(
       target:
           LatLng(widget.locationData.latitude, widget.locationData.longitude),
-      zoom: 10,
+      zoom: 7,
     );
     super.initState();
   }
@@ -52,7 +52,9 @@ class MapLocationPickerState extends State<MapLocationPicker> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
-          Navigator.pop(context, markers.single.position);
+          if (markers.isNotEmpty)
+            Navigator.pop(context, markers.single.position);
+          else if (markers.isEmpty) ;
         },
         label: Text('Done'),
         icon: Icon(Icons.done),
