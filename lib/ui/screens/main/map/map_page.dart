@@ -12,23 +12,12 @@ class MapSample extends StatefulWidget {
 
 class MapSampleState extends State<MapSample> {
   Future _future;
-  final nameController = TextEditingController();
-  final ageController = TextEditingController();
-  final latitudeController = TextEditingController();
-  final longitudeController = TextEditingController();
 
   Dio dio = new Dio();
   Future getData() async {
-    final String url = 'http://10.0.2.2/GoApp/locations.php';
-    final map = {
-      "name": nameController.text,
-      "age": ageController.text,
-      "latitude": latitudeController.text,
-      "longitude": longitudeController.text
-    };
+    final String url = 'http://13.92.138.210:4000/reports';
     //var response = await dio.post(url, data: FormData.fromMap(map));
-    var response = await dio.get(url,queryParameters: map,
-      options: Options(contentType: Headers.formUrlEncodedContentType,),);
+    var response = await dio.get(url);
     return response.data;
   }
 
@@ -66,18 +55,13 @@ class MapSampleState extends State<MapSample> {
                 );
               }
               List<dynamic> parsedJson = jsonDecode(snapshot.data);
-
               allMarkers = parsedJson.map((i) {
-
                 return Marker(
                   markerId: MarkerId(i['id']),
                   position: LatLng(i['latitude'], i['longitude']),
                   onTap: () {},
                 );
-
-
               }).toList();
-
 
               return GoogleMap(
                 initialCameraPosition: CameraPosition(
