@@ -11,37 +11,37 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 
 class ReportScreen extends HookWidget {
+  final location = new Location();
   final ReportType reportType;
-  const ReportScreen(this.reportType, {Key key}) : super(key: key);
+  ReportScreen(this.reportType, {Key key}) : super(key: key);
 
   Future getLocation() async {
-    Location location = new Location();
-
     bool _serviceEnabled;
     PermissionStatus _permissionGranted;
 
-    _serviceEnabled = await location.serviceEnabled();
+    _serviceEnabled = await this.location.serviceEnabled();
     if (!_serviceEnabled) {
-      _serviceEnabled = await location.requestService();
+      _serviceEnabled = await this.location.requestService();
       if (!_serviceEnabled) {
         return;
       }
     }
 
-    _permissionGranted = await location.hasPermission();
+    _permissionGranted = await this.location.hasPermission();
     if (_permissionGranted == PermissionStatus.denied) {
-      _permissionGranted = await location.requestPermission();
+      _permissionGranted = await this.location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
         return;
       }
     }
-
-    return await location.getLocation();
+    var location = await this.location.getLocation();
+    return location;
   }
 
-  Future<void> showMafcodeDialog({String message, String title}) async {
+  Future<void> showMafcodeDialog(
+      {String message, String title, BuildContext context}) async {
     return showDialog<void>(
-      context: useContext(),
+      context: context,
       barrierDismissible: false, // user must tap button!
       builder: (BuildContext context) {
         return AlertDialog(
@@ -195,9 +195,12 @@ class ReportScreen extends HookWidget {
                     if (location is! LocationData)
                       showMafcodeDialog(
                           message:
-                              "In order to get location automatically, you have to enable location permissions");
-                    latitudeController.text = location.latitude.toString();
-                    longitudeController.text = location.longitude.toString();
+                              "In order to get location automatically, you have to enable location permissions",
+                          context: useContext());
+                    else {
+                      latitudeController.text = location.latitude.toString();
+                      longitudeController.text = location.longitude.toString();
+                    }
                   },
                 ),
                 const SizedBox(
@@ -217,9 +220,17 @@ class ReportScreen extends HookWidget {
                     if (location is! LocationData)
                       showMafcodeDialog(
                           message:
-                              "In order to get location automatically, you have to enable location permissions");
-                    else
-                      Navigator.of(context).pushNamed(Routes.mapLocationPicker);
+                              "In order to get location automatically, you have to enable location permissions",
+                          context: useContext());
+                    else {
+                      var location = await getLocation();
+                      location = await Navigator.of(context).pushNamed(
+                          Routes.mapLocationPicker,
+                          arguments: MapLocationPickerArguments(
+                              locationData: location));
+                      latitudeController.text = location.latitude.toString();
+                      longitudeController.text = location.longitude.toString();
+                    }
                   },
                 ),
               ],
