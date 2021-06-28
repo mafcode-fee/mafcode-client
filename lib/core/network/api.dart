@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:io';
 
-import 'package:meta/meta.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';

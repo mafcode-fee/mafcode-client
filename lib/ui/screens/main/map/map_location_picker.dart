@@ -54,7 +54,7 @@ class MapLocationPickerState extends State<MapLocationPicker> {
         onPressed: () {
           if (markers.isNotEmpty)
             Navigator.pop(context, markers.single.position);
-          else if (markers.isEmpty) ;
+          // else if (markers.isEmpty) ;
         },
         label: Text('Done'),
         icon: Icon(Icons.done),

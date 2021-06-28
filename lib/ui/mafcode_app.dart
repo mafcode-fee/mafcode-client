@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
-import 'package:mafcode/ui/screens/login/login_screen.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
 
 class MafcodeApp extends StatefulWidget {
