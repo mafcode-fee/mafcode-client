@@ -109,7 +109,7 @@ class ReportScreen extends HookWidget {
             ),
             const SizedBox(height: 25),
             Align(
-              child: RaisedButton(
+              child: ElevatedButton(
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
@@ -128,7 +128,7 @@ class ReportScreen extends HookWidget {
                           children: [
                             Text("Pick Image from"),
                             Spacer(),
-                            FlatButton(
+                            TextButton(
                               onPressed: () async {
                                 Navigator.of(context).pop(
                                   await picker.getImage(
@@ -136,9 +136,8 @@ class ReportScreen extends HookWidget {
                                 );
                               },
                               child: Text("Gallery"),
-                              textColor: Colors.blueAccent,
                             ),
-                            FlatButton(
+                            TextButton(
                               onPressed: () async {
                                 Navigator.of(context).pop(
                                   await picker.getImage(
@@ -146,7 +145,6 @@ class ReportScreen extends HookWidget {
                                 );
                               },
                               child: Text("Camera"),
-                              textColor: Colors.blueAccent,
                             ),
                           ],
                         ),
@@ -183,7 +181,7 @@ class ReportScreen extends HookWidget {
                   ),
                 ),
                 const SizedBox(width: 15),
-                RaisedButton(
+                ElevatedButton(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -208,7 +206,7 @@ class ReportScreen extends HookWidget {
                 const SizedBox(
                   width: 10,
                 ),
-                RaisedButton(
+                ElevatedButton(
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
@@ -263,9 +261,7 @@ class ReportScreen extends HookWidget {
                 child: CircularProgressIndicator(),
               )
             else
-              RaisedButton(
-                color: Theme.of(context).primaryColor,
-                textColor: Colors.white,
+              ElevatedButton(
                 child: Text("Report"),
                 onPressed: () {
                   store.postNewReport(

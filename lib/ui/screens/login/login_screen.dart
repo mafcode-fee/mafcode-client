@@ -76,13 +76,12 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     child: Text("Register"),
                     onPressed: () async {
-                      Navigator.of(context).pushNamed(Routes.registrationScreen);
+                      Navigator.of(context)
+                          .pushNamed(Routes.registrationScreen);
                     },
                   ),
                   Spacer(),
-                  RaisedButton(
-                    color: Theme.of(context).primaryColor,
-                    textColor: Colors.white,
+                  ElevatedButton(
                     child: Text("Login"),
                     onPressed: () async {
                       setState(() {
@@ -93,7 +92,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       try {
                         final logUser = await postData();
                         if (logUser != null) {
-                          Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
+                          Navigator.of(context)
+                              .pushReplacementNamed(Routes.mainScreen);
                         }
                         setState(() {
                           showSpinner = false;

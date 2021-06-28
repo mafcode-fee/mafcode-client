@@ -152,12 +152,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                   Align(
                     alignment: Alignment.center,
                     child: ElevatedButton(
-                      // color: Theme.of(context).primaryColor,
-                      // textColor: Colors.white,
-                      // style: ButtonStyle(),
                       child: Text(
                         "Register",
-                        style: TextStyle(fontSize: 20),
                       ),
                       onPressed: () async {
                         statusCode = checkRegistrationInput(
