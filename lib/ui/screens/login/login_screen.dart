@@ -31,7 +31,7 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   Future postData() async {
-    final String url = 'http://13.92.138.210:4000/login';
+    final String url = 'http://40.114.123.215:4000/login';
     final map = {
       "email": emailController.text,
       "password": passwordController.text,
@@ -76,13 +76,16 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     child: Text("Register"),
                     onPressed: () async {
-                      Navigator.of(context)
-                          .pushNamed(Routes.registrationScreen);
+                      Navigator.of(context).pushNamed(Routes.registrationScreen);
                     },
                   ),
                   Spacer(),
                   ElevatedButton(
-                    child: Text("Login"),
+                    child: Row(
+                      children: [
+                        Text("Login"),
+                      ],
+                    ),
                     onPressed: () async {
                       setState(() {
                         showSpinner = true;

@@ -10,6 +10,11 @@ class RegistrationScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
+enum ValidationErros {
+  NAME_,
+  
+}
+
 class _RegistrationScreenState extends State<RegistrationScreen> {
   int statusCode;
   // email,first_name,last_name,password
@@ -59,7 +64,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   Future registerUser(
       String firstName, String lastName, String email, String password) async {
     var options = BaseOptions(
-      baseUrl: 'http://13.92.138.210:4000',
+      baseUrl: 'http://40.114.123.215:4000',
     );
     var dio = Dio(options);
     dio.interceptors.add(PrettyDioLogger());

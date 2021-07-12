@@ -5,7 +5,7 @@ import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/network/api.dart';
 
-const IP = "http://10.0.2.2:5000";
+const IP = "http://40.114.123.215:5000";
 
 class MatchesScreen extends StatefulWidget {
   final String reportId;

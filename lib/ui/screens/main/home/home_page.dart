@@ -30,12 +30,11 @@ class HomePage extends StatelessWidget {
             HomeCard(
               lable: "Report Found",
               icon: Icons.emoji_people_rounded,
-              color: Colors.red,
+              color: Colors.blue,
               onTap: () {
                 Navigator.of(context).pushNamed(
                   Routes.reportScreen,
-                  arguments:
-                      ReportScreenArguments(reportType: ReportType.FOUND),
+                  arguments: ReportScreenArguments(reportType: ReportType.FOUND),
                 );
               },
             ),
@@ -46,8 +45,7 @@ class HomePage extends StatelessWidget {
               onTap: () {
                 Navigator.of(context).pushNamed(
                   Routes.reportScreen,
-                  arguments:
-                      ReportScreenArguments(reportType: ReportType.MISSING),
+                  arguments: ReportScreenArguments(reportType: ReportType.MISSING),
                 );
               },
             ),
@@ -124,10 +122,7 @@ class LastReportsWidget extends HookWidget {
                             Text("Name: ${r.name}"),
                             SizedBox(height: 10),
                             Text("Age: ${r.age.round()}"),
-                            if (r.clothings != null) ...[
-                              SizedBox(height: 10),
-                              Text("Clothings: ${r.clothings ?? ""}")
-                            ],
+                            if (r.clothings != null) ...[SizedBox(height: 10), Text("Clothings: ${r.clothings ?? ""}")],
                           ],
                         ),
                       ),
@@ -177,7 +172,7 @@ class HomeCard extends StatelessWidget {
             children: [
               Icon(
                 icon,
-                size: 80,
+                size: 75,
                 color: color,
               ),
               SizedBox(height: 24),
@@ -185,7 +180,7 @@ class HomeCard extends StatelessWidget {
                 lable,
                 style: TextStyle(
                   fontWeight: FontWeight.w500,
-                  fontSize: 18,
+                  fontSize: 15,
                 ),
               )
             ],

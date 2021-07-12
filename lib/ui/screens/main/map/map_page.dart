@@ -14,7 +14,7 @@ class MapSampleState extends State<MapSample> {
 
   Dio dio = new Dio();
   Future getData() async {
-    final String url = 'http://13.92.138.210:4000/reports';
+    final String url = 'http://40.114.123.215:4000/reports';
     //var response = await dio.post(url, data: FormData.fromMap(map));
     var response = await dio.get(url);
     return response.data;
