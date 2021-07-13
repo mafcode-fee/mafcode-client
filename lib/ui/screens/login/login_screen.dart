@@ -1,11 +1,10 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -16,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool showSpinner = false;
+  SharedPreferences prefs;
 
   String error;
 
@@ -25,7 +25,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Dio dio = new Dio();
 
   @override
-  void initState() {
+  void initState() async {
+    prefs = await SharedPreferences.getInstance();
     dio.interceptors.add(PrettyDioLogger());
     super.initState();
   }
@@ -37,8 +38,8 @@ class _LoginScreenState extends State<LoginScreen> {
       "password": passwordController.text,
     };
     var response = await dio.post(url, data: FormData.fromMap(map));
-    // print(response['access_token']);
-    return response.data;
+    String token = response.data['access_token'];
+    return token;
   }
 
   @override
@@ -103,6 +104,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             try {
                               final logUser = await postData();
                               if (logUser != null) {
+                                prefs.setString('token', logUser);
                                 // TODO: save token
                                 Navigator.of(context)
                                     .pushReplacementNamed(Routes.mainScreen);
