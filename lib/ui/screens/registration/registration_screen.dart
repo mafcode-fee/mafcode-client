@@ -129,24 +129,29 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                       labelText: "First Name",
                     ),
                     controller: firstNameTextController,
+                    textInputAction: TextInputAction.next,
                   ),
                   TextField(
                     decoration: InputDecoration(labelText: "Last Name"),
                     controller: lastNameTextController,
+                    textInputAction: TextInputAction.next,
                   ),
                   TextField(
                     decoration: InputDecoration(labelText: "Email"),
                     controller: emailTextController,
+                    textInputAction: TextInputAction.next,
                   ),
                   TextField(
                     obscureText: true,
                     decoration: InputDecoration(labelText: "Password"),
                     controller: passwordTextController,
+                    textInputAction: TextInputAction.next,
                   ),
                   TextField(
                     obscureText: true,
                     decoration: InputDecoration(labelText: "Confirm Password"),
                     controller: confirmedPasswordTextController,
+                    textInputAction: TextInputAction.done,
                   ),
                   SizedBox(height: 24),
                   Align(
