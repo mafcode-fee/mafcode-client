@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
@@ -35,6 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
       "password": passwordController.text,
     };
     var response = await dio.post(url, data: FormData.fromMap(map));
+    // print(response['access_token']);
     return response.data;
   }
 
@@ -44,82 +47,93 @@ class _LoginScreenState extends State<LoginScreen> {
       appBar: AppBar(
         title: Text("Login"),
       ),
-      body: ModalProgressHUD(
-        inAsyncCall: showSpinner,
-        child: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              LogoWidget(),
-              SizedBox(height: 48),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(labelText: "Email"),
-              ),
-              TextField(
-                controller: passwordController,
-                obscureText: true,
-                decoration: InputDecoration(labelText: "Password"),
-              ),
-              SizedBox(height: 24),
-              if (error != null)
-                Text(
-                  error,
-                  style: TextStyle(color: Colors.red),
-                ),
-              Row(
-                children: [
-                  TextButton(
-                    child: Text("Register"),
-                    onPressed: () async {
-                      Navigator.of(context)
-                          .pushNamed(Routes.registrationScreen);
-                    },
-                  ),
-                  Spacer(),
-                  ElevatedButton(
-                    child: Row(
+      body: SafeArea(
+        child: GestureDetector(
+          onTap: () {
+            FocusScope.of(context).requestFocus(new FocusNode());
+          },
+          child: SingleChildScrollView(
+            child: ModalProgressHUD(
+              inAsyncCall: showSpinner,
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    LogoWidget(),
+                    SizedBox(height: 48),
+                    TextField(
+                      controller: emailController,
+                      decoration: InputDecoration(labelText: "Email"),
+                    ),
+                    TextField(
+                      controller: passwordController,
+                      obscureText: true,
+                      decoration: InputDecoration(labelText: "Password"),
+                    ),
+                    SizedBox(height: 24),
+                    if (error != null)
+                      Text(
+                        error,
+                        style: TextStyle(color: Colors.red),
+                      ),
+                    Row(
                       children: [
-                        Text("Login"),
+                        TextButton(
+                          child: Text("Register"),
+                          onPressed: () async {
+                            Navigator.of(context)
+                                .pushNamed(Routes.registrationScreen);
+                          },
+                        ),
+                        Spacer(),
+                        ElevatedButton(
+                          child: Row(
+                            children: [
+                              Text("Login"),
+                            ],
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              showSpinner = true;
+                              error = null;
+                            });
+                            print('Posting data...');
+                            try {
+                              final logUser = await postData();
+                              if (logUser != null) {
+                                // TODO: save token
+                                Navigator.of(context)
+                                    .pushReplacementNamed(Routes.mainScreen);
+                              }
+                              setState(() {
+                                showSpinner = false;
+                              });
+                            } on Exception catch (e) {
+                              print(e);
+                              setState(() {
+                                error = e.toString();
+                              });
+                            }
+                            //                  await post().then((value){
+                            //                    print(value);
+                            //                  });
+                          },
+                        ),
                       ],
                     ),
-                    onPressed: () async {
-                      setState(() {
-                        showSpinner = true;
-                        error = null;
-                      });
-                      print('Posting data...');
-                      try {
-                        final logUser = await postData();
-                        if (logUser != null) {
-                          Navigator.of(context)
-                              .pushReplacementNamed(Routes.mainScreen);
-                        }
-                        setState(() {
-                          showSpinner = false;
-                        });
-                      } on Exception catch (e) {
-                        print(e);
-                        setState(() {
-                          error = e.toString();
-                        });
-                      }
-//                  await post().then((value){
-//                    print(value);
-//                  });
-                    },
-                  ),
-                ],
+                    TextButton(
+                      child: Text("Skip"),
+                      onPressed: () async {
+                        Navigator.of(context)
+                            .pushReplacementNamed(Routes.mainScreen);
+                      },
+                    ),
+                  ],
+                ),
               ),
-              TextButton(
-                child: Text("Skip"),
-                onPressed: () async {
-                  Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
-                },
-              ),
-            ],
+            ),
           ),
         ),
       ),
