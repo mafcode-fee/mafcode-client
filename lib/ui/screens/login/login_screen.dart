@@ -1,11 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
-//import 'package:mafcode/ui/auto_router_config.gr.dart';
+import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
-
-import '../../auto_router_config.gr.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key key}) : super(key: key);
@@ -76,7 +74,8 @@ class _LoginScreenState extends State<LoginScreen> {
                   TextButton(
                     child: Text("Register"),
                     onPressed: () async {
-                      Navigator.of(context).pushNamed(Routes.registrationScreen);
+                      Navigator.of(context)
+                          .pushNamed(Routes.registrationScreen);
                     },
                   ),
                   Spacer(),

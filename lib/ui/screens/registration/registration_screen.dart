@@ -10,11 +10,6 @@ class RegistrationScreen extends StatefulWidget {
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
 
-enum ValidationErros {
-  NAME_,
-  
-}
-
 class _RegistrationScreenState extends State<RegistrationScreen> {
   int statusCode;
   // email,first_name,last_name,password
