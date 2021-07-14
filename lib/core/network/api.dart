@@ -19,6 +19,7 @@ abstract class Api {
   @POST("/reports/{reportType}")
   @MultiPart()
   Future<Report> createReportJsonString(
+    @Header("Authorization") String token,
     @Path("reportType") String reportTypeString,
     @Part(name: "image") File image,
     @Part(name: "payload") String reportJsonString,
@@ -35,19 +36,21 @@ extension ApiExt on Api {
   String getImageUrlFromId(String imageId) => "$baseUrl/img/$imageId";
 
   Future<Report> createReport(
+    String token,
     ReportType reportType,
     Report report,
     File image,
   ) =>
       createReportJsonString(
+        "bearer $token",
         reportType.lowerCaseString,
         image,
         json.encode(report.toJson()),
       );
 
-  Future<Report> createMissingReport(Report report, File image) =>
-      createReport(ReportType.MISSING, report, image);
+  Future<Report> createMissingReport(String token, Report report, File image) =>
+      createReport(token, ReportType.MISSING, report, image);
 
-  Future<Report> createFoundReport(Report report, File image) =>
-      createReport(ReportType.FOUND, report, image);
+  Future<Report> createFoundReport(String token, Report report, File image) =>
+      createReport(token, ReportType.FOUND, report, image);
 }

@@ -5,6 +5,7 @@ import 'package:mafcode/ui/screens/main/home/last_reports_store.dart';
 import 'package:mafcode/ui/screens/report/report_screen_store.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod/riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 final dioProvider = Provider<Dio>((_) {
   final dio = Dio();
