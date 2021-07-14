@@ -37,11 +37,8 @@ abstract class _ReportScreenStoreBase with Store {
     String notes,
     File file,
   }) async {
-    final prefs = await SharedPreferences.getInstance();
-    final token = prefs.getString("token");
     addReportFuture = _api
         .createReport(
-      token,
       reportType,
       Report(
         name: name,

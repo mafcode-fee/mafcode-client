@@ -9,6 +9,18 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final dioProvider = Provider<Dio>((_) {
   final dio = Dio();
+
+  dio.interceptors.add(InterceptorsWrapper(
+    onRequest: (options) async {
+      final pref = await SharedPreferences.getInstance();
+      if (pref.containsKey("token")) {
+        final token = pref.getString("token");
+        options.headers["Authorization"] = "bearer $token";
+      }
+      return options;
+    },
+  ));
+
   if (kDebugMode) {
     dio.interceptors.add(PrettyDioLogger(
       request: true,

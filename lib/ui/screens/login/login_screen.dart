@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
@@ -25,10 +27,15 @@ class _LoginScreenState extends State<LoginScreen> {
   Dio dio = new Dio();
 
   @override
-  void initState() async {
-    prefs = await SharedPreferences.getInstance();
-    dio.interceptors.add(PrettyDioLogger());
+  void initState() {
     super.initState();
+    // setState(() {
+    //   showSpinner = true;
+    // });
+    SharedPreferences.getInstance().then((value) {
+      prefs = value;
+    });
+    dio.interceptors.add(PrettyDioLogger());
   }
 
   Future postData() async {
@@ -84,8 +91,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         TextButton(
                           child: Text("Register"),
                           onPressed: () async {
-                            Navigator.of(context)
-                                .pushNamed(Routes.registrationScreen);
+                            Navigator.of(context).pushNamed(Routes.registrationScreen);
                           },
                         ),
                         Spacer(),
@@ -106,8 +112,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               if (logUser != null) {
                                 prefs.setString('token', logUser);
                                 // TODO: save token
-                                Navigator.of(context)
-                                    .pushReplacementNamed(Routes.mainScreen);
+                                Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
                               }
                               setState(() {
                                 showSpinner = false;
@@ -128,8 +133,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     TextButton(
                       child: Text("Skip"),
                       onPressed: () async {
-                        Navigator.of(context)
-                            .pushReplacementNamed(Routes.mainScreen);
+                        Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
                       },
                     ),
                   ],
