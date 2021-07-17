@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mafcode/ui/screens/main/Notifications/Notifications.dart';
+import 'package:mafcode/ui/screens/main/Profile/Profile.dart';
 import 'package:mafcode/ui/screens/main/home/home_page.dart';
 
 import 'map/map_page.dart';
@@ -40,8 +42,8 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           HomePage(),
           MapSample(),
-          _PlaceHolder(text: "Notifications"),
-          _PlaceHolder(text: "Profile"),
+          Notifications(),
+          Profile(),
         ],
       ),
       bottomNavigationBar: BottomNavigationBar(
