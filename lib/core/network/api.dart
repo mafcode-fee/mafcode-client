@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:mafcode/core/models/login_result.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
@@ -12,6 +14,20 @@ abstract class Api {
   final String baseUrl;
 
   factory Api(Dio dio, {String baseUrl}) = _Api;
+
+  @POST("/login")
+  @FormUrlEncoded()
+  Future<LoginResult> login(@Field() String email, @Field() String password);
+
+  @POST("/register")
+  @FormUrlEncoded()
+  Future<HttpResponse> register({
+    @required @Field() String email,
+    @required @Field() String password,
+    @required @Field("first_name") firstName,
+    @required @Field("last_name") String lastName,
+    @required @Field() String contact,
+  });
 
   @GET("/reports")
   Future<List<Report>> getAllReports();
@@ -45,9 +61,7 @@ extension ApiExt on Api {
         json.encode(report.toJson()),
       );
 
-  Future<Report> createMissingReport(Report report, File image) =>
-      createReport(ReportType.MISSING, report, image);
+  Future<Report> createMissingReport(Report report, File image) => createReport(ReportType.MISSING, report, image);
 
-  Future<Report> createFoundReport(Report report, File image) =>
-      createReport(ReportType.FOUND, report, image);
+  Future<Report> createFoundReport(Report report, File image) => createReport(ReportType.FOUND, report, image);
 }

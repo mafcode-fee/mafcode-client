@@ -1,11 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mafcode/core/di/providers.dart';
+import 'package:mafcode/core/network/api.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:validators/validators.dart';
 
-class RegistrationScreen extends StatefulWidget {
+class RegistrationScreen extends StatefulHookWidget {
   @override
   _RegistrationScreenState createState() => _RegistrationScreenState();
 }
@@ -18,12 +22,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
   final emailTextController = TextEditingController();
   final passwordTextController = TextEditingController();
   final confirmedPasswordTextController = TextEditingController();
-
-  String firstName;
-  String lastName;
-  String email;
-  String password;
-  String confirmedPassword;
+  final contactTextController = TextEditingController();
 
   @override
   void dispose() {
@@ -37,12 +36,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
     super.dispose();
   }
 
-  checkRegistrationInput(String firstName, String lastName, String email,
-      String password, String confirmedPassword) {
-    bool correctEmail = isEmail(email);
-    bool correctPassword = equals(password, confirmedPassword);
+  checkRegistrationInput() {
+    bool correctEmail = isEmail(emailTextController.text);
+    bool correctPassword = equals(passwordTextController.text, confirmedPasswordTextController.text);
     bool passwordLength = isLength(
-      password,
+      passwordTextController.text,
       5,
       30,
     );
@@ -56,24 +54,21 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
       return 000;
   }
 
-  Future registerUser(
-      String firstName, String lastName, String email, String password) async {
-    var options = BaseOptions(
-      baseUrl: 'http://40.114.123.215:4000',
-    );
-    var dio = Dio(options);
-    dio.interceptors.add(PrettyDioLogger());
-    var map = new Map<String, dynamic>();
-    map['email'] = email;
-    map['first_name'] = firstName;
-    map['last_name'] = lastName;
-    map['password'] = password;
+  Future registerUser(Api api) async {
     try {
-      var formData = new FormData.fromMap(map);
-      var response = await dio.post('/register', data: formData);
+      final response = await api.register(
+          email: emailTextController.text,
+          password: passwordTextController.text,
+          firstName: firstNameTextController.text,
+          lastName: lastNameTextController.text,
+          contact: contactTextController.text);
       return response.data;
     } catch (e) {
+      if (e is DioError && e.type == DioErrorType.RESPONSE) {
+        return e.response.data;
+      }
       print(e);
+      return e.toString();
     }
   }
 
@@ -106,6 +101,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final api = useProvider(apiProvider);
     return Scaffold(
       appBar: AppBar(
         title: Text('Registration'),
@@ -142,6 +138,11 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     textInputAction: TextInputAction.next,
                   ),
                   TextField(
+                    decoration: InputDecoration(labelText: "Contact Information"),
+                    controller: contactTextController,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  TextField(
                     obscureText: true,
                     decoration: InputDecoration(labelText: "Password"),
                     controller: passwordTextController,
@@ -161,64 +162,40 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         "Register",
                       ),
                       onPressed: () async {
-                        statusCode = checkRegistrationInput(
-                            firstNameTextController.text,
-                            lastNameTextController.text,
-                            emailTextController.text,
-                            passwordTextController.text,
-                            confirmedPasswordTextController.text);
+                        statusCode = checkRegistrationInput();
                         switch (statusCode) {
                           case 104:
-                            showMafcodeDialog(
-                                message: "Please enter a valid email",
-                                title: "Error");
+                            showMafcodeDialog(message: "Please enter a valid email", title: "Error");
                             break;
                           case 204:
-                            showMafcodeDialog(
-                                message: "The two passwords don't match",
-                                title: "Error!");
+                            showMafcodeDialog(message: "The two passwords don't match", title: "Error!");
                             break;
                           case 205:
                             showMafcodeDialog(
-                                message:
-                                    "Please enter a password that is between 5 and 30 characters long",
+                                message: "Please enter a password that is between 5 and 30 characters long",
                                 title: "Error");
                             break;
                           case 000:
-                            firstName = firstNameTextController.text;
-                            lastName = lastNameTextController.text;
-                            email = emailTextController.text;
-                            password = passwordTextController.text;
                             try {
-                              Map response = await registerUser(
-                                  firstName, lastName, email, password);
-                              if (response["message"] == "User Already Exist")
+                              Map response = await registerUser(api);
+                              if (response["message"] == "This email already exists")
                                 showMafcodeDialog(
-                                    message:
-                                        "This email already exists, please enter a different email",
+                                    message: "This email already exists, please enter a different email",
                                     title: "Error!");
-                              else if (response["message"] ==
-                                  "User added sucessfully") {
+                              else if (response["message"] == "User added sucessfully") {
                                 showMafcodeDialog(
-                                    message:
-                                        "Registeration Done Successfully, Please login with your information",
+                                    message: "Registeration Done Successfully, Please login with your information",
                                     title: "Success!");
-                                Future.delayed(Duration(milliseconds: 3000),
-                                    () {
-                                  Navigator.of(context)
-                                      .pushReplacementNamed(Routes.loginScreen);
+                                Future.delayed(Duration(milliseconds: 3000), () {
+                                  Navigator.of(context).pushReplacementNamed(Routes.loginScreen);
                                 });
                               }
                             } catch (e, stackTracke) {
-                              debugPrintStack(
-                                  label: e.toString(), stackTrace: stackTracke);
+                              debugPrintStack(label: e.toString(), stackTrace: stackTracke);
                               if (e is DioError && e.response != null) {
-                                showMafcodeDialog(
-                                    message: e.response.data.toString(),
-                                    title: "Server Error!");
+                                showMafcodeDialog(message: e.response.data.toString(), title: "Server Error!");
                               } else {
-                                showMafcodeDialog(
-                                    message: e.toString(), title: "Error!");
+                                showMafcodeDialog(message: e.toString(), title: "Error!");
                               }
                             }
                             break;

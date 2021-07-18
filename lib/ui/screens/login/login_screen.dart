@@ -1,56 +1,28 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key key}) : super(key: key);
-
-  @override
-  _LoginScreenState createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  bool showSpinner = false;
-  SharedPreferences prefs;
-
-  String error;
-
-  final emailController = TextEditingController();
-  final passwordController = TextEditingController();
-
-  Dio dio = new Dio();
-
-  @override
-  void initState() {
-    super.initState();
-    // setState(() {
-    //   showSpinner = true;
-    // });
-    SharedPreferences.getInstance().then((value) {
-      prefs = value;
-    });
-    dio.interceptors.add(PrettyDioLogger());
-  }
-
-  Future postData() async {
-    final String url = 'http://40.114.123.215:4000/login';
-    final map = {
-      "email": emailController.text,
-      "password": passwordController.text,
-    };
-    var response = await dio.post(url, data: FormData.fromMap(map));
-    String token = response.data['access_token'];
-    return token;
-  }
-
+class LoginScreen extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    useMemoized(() async {
+      final sharedPref = await SharedPreferences.getInstance();
+      if (sharedPref.containsKey("token")) {
+        Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
+      }
+    });
+    final showSpinner = useState(false);
+    final error = useState<String>();
+    final emailController = useTextEditingController();
+    final passwordController = useTextEditingController();
+    final api = useProvider(apiProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Text("Login"),
@@ -61,40 +33,41 @@ class _LoginScreenState extends State<LoginScreen> {
             FocusScope.of(context).requestFocus(new FocusNode());
           },
           child: SingleChildScrollView(
-            child: ModalProgressHUD(
-              inAsyncCall: showSpinner,
-              child: Padding(
-                padding: const EdgeInsets.all(24.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    LogoWidget(),
-                    SizedBox(height: 48),
-                    TextField(
-                      controller: emailController,
-                      decoration: InputDecoration(labelText: "Email"),
+            child: Padding(
+              padding: const EdgeInsets.all(24.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  LogoWidget(),
+                  SizedBox(height: 48),
+                  TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(labelText: "Email"),
+                  ),
+                  TextField(
+                    controller: passwordController,
+                    obscureText: true,
+                    decoration: InputDecoration(labelText: "Password"),
+                  ),
+                  SizedBox(height: 24),
+                  if (error.value != null)
+                    Text(
+                      error.value,
+                      style: TextStyle(color: Colors.red),
                     ),
-                    TextField(
-                      controller: passwordController,
-                      obscureText: true,
-                      decoration: InputDecoration(labelText: "Password"),
-                    ),
-                    SizedBox(height: 24),
-                    if (error != null)
-                      Text(
-                        error,
-                        style: TextStyle(color: Colors.red),
+                  Row(
+                    children: [
+                      TextButton(
+                        child: Text("Register"),
+                        onPressed: () async {
+                          Navigator.of(context).pushNamed(Routes.registrationScreen);
+                        },
                       ),
-                    Row(
-                      children: [
-                        TextButton(
-                          child: Text("Register"),
-                          onPressed: () async {
-                            Navigator.of(context).pushNamed(Routes.registrationScreen);
-                          },
-                        ),
-                        Spacer(),
+                      Spacer(),
+                      if (showSpinner.value)
+                        CircularProgressIndicator()
+                      else
                         ElevatedButton(
                           child: Row(
                             children: [
@@ -102,42 +75,39 @@ class _LoginScreenState extends State<LoginScreen> {
                             ],
                           ),
                           onPressed: () async {
-                            setState(() {
-                              showSpinner = true;
-                              error = null;
-                            });
+                            showSpinner.value = true;
+                            error.value = null;
                             print('Posting data...');
                             try {
-                              final logUser = await postData();
-                              if (logUser != null) {
-                                prefs.setString('token', logUser);
-                                // TODO: save token
-                                Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
-                              }
-                              setState(() {
-                                showSpinner = false;
-                              });
+                              final loginResult = await api.login(
+                                emailController.text,
+                                passwordController.text,
+                              );
+                              final sharedPref = await SharedPreferences.getInstance();
+                              sharedPref.setString('token', loginResult.accessToken);
+                              Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
+                              showSpinner.value = false;
                             } on Exception catch (e) {
                               print(e);
-                              setState(() {
-                                error = e.toString();
-                              });
+                              if (e is DioError) {
+                                if (e.type == DioErrorType.RESPONSE) {
+                                  error.value = e.response.data["message"];
+                                } else {
+                                  error.value = e.message;
+                                }
+                              } else {
+                                error.value = e.toString();
+                              }
+                              showSpinner.value = false;
                             }
                             //                  await post().then((value){
                             //                    print(value);
                             //                  });
                           },
                         ),
-                      ],
-                    ),
-                    TextButton(
-                      child: Text("Skip"),
-                      onPressed: () async {
-                        Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
-                      },
-                    ),
-                  ],
-                ),
+                    ],
+                  ),
+                ],
               ),
             ),
           ),
