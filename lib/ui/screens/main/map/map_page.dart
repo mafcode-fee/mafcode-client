@@ -14,8 +14,6 @@ class MapSample extends StatefulHookWidget {
 }
 
 class MapSampleState extends State<MapSample> {
-  Future _future;
-
   Future<List<Report>> getData(Api api) async {
     var response = await api.getAllReports();
     return response;
@@ -61,8 +59,7 @@ class MapSampleState extends State<MapSample> {
               }).toList();
 
               return GoogleMap(
-                initialCameraPosition: CameraPosition(
-                    target: LatLng(40.7128, -74.0060), zoom: 1.0),
+                initialCameraPosition: CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 1.0),
                 markers: Set.from(allMarkers),
                 mapType: MapType.normal,
                 tiltGesturesEnabled: true,
