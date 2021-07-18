@@ -81,15 +81,3 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 }
-
-class _PlaceHolder extends StatelessWidget {
-  final String text;
-  const _PlaceHolder({@required this.text, Key key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text("This is a placeholder page for \"$text\""),
-    );
-  }
-}
