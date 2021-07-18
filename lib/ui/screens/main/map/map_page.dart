@@ -2,9 +2,14 @@ import 'dart:async';
 
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mafcode/core/di/providers.dart';
+import 'package:mafcode/core/models/report.dart';
+import 'package:mafcode/core/network/api.dart';
 
-class MapSample extends StatefulWidget {
+class MapSample extends StatefulHookWidget {
   @override
   State<MapSample> createState() => MapSampleState();
 }
@@ -12,12 +17,9 @@ class MapSample extends StatefulWidget {
 class MapSampleState extends State<MapSample> {
   Future _future;
 
-  Dio dio = new Dio();
-  Future getData() async {
-    final String url = 'http://40.114.123.215:4000/reports';
-    // var response = await dio.post(url, data: FormData.fromMap(map));
-    var response = await dio.get(url);
-    return response.data;
+  Future<List<Report>> getData(Api api) async {
+    var response = await api.getAllReports();
+    return response;
   }
 
   List<Marker> allMarkers = [];
@@ -25,11 +27,14 @@ class MapSampleState extends State<MapSample> {
   @override
   void initState() {
     super.initState();
-    _future = getData();
   }
 
   @override
   Widget build(BuildContext context) {
+    final api = useProvider(apiProvider);
+    final Future<List<Report>> _future = useMemoized(() {
+      return api.getAllReports();
+    });
     return Scaffold(
       body: Stack(children: [
         Container(
@@ -57,8 +62,7 @@ class MapSampleState extends State<MapSample> {
               }).toList();
 
               return GoogleMap(
-                initialCameraPosition: CameraPosition(
-                    target: LatLng(40.7128, -74.0060), zoom: 1.0),
+                initialCameraPosition: CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 1.0),
                 markers: Set.from(allMarkers),
                 mapType: MapType.normal,
                 tiltGesturesEnabled: true,
