@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:mafcode/core/models/login_result.dart';
 import 'package:mafcode/core/models/report.dart';
+import 'package:mafcode/core/models/user_info.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
 
@@ -28,6 +29,26 @@ abstract class Api {
     @required @Field("last_name") String lastName,
     @required @Field() String contact,
   });
+
+  @GET("/me/info")
+  Future<UserInfo> getCurrentUserInfo();
+
+  @POST("/me/update")
+  @FormUrlEncoded()
+  Future<HttpResponse> updateCurrentUserInfo({
+    @required @Field() String email,
+    @required @Field() String password,
+    @required @Field("new_password") String newPassword,
+    @required @Field("first_name") firstName,
+    @required @Field("last_name") String lastName,
+    @required @Field() String contact,
+  });
+
+  @POST("/me/update_photo")
+  @MultiPart()
+  Future<HttpResponse> changeCurrentUserPhoto(
+    @Part(name: "image") File image,
+  );
 
   @GET("/reports")
   Future<List<Report>> getAllReports();
