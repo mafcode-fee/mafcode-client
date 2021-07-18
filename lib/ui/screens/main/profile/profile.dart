@@ -1,8 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:mafcode/ui/screens/main/Profile/EditProfile.dart';
-
+import 'package:mafcode/ui/screens/main/profile/editProfile.dart';
 
 class Profile extends StatefulWidget {
   @override
@@ -23,15 +22,13 @@ class _ProfileState extends State<Profile> {
           child: ListView(children: [
             IconButton(
               icon: Container(
-                padding: EdgeInsets.only(left: 10,top: 10, right: 10),
+                padding: EdgeInsets.only(left: 10, top: 10, right: 10),
                 alignment: Alignment.topRight,
                 child: Icon(
                   Icons.settings,
                   color: Colors.black,
                   size: 40.0,
                 ),
-
-
               ),
               onPressed: () {
                 Navigator.of(context).push(MaterialPageRoute(

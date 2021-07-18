@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mafcode/ui/screens/main/Profile/Profile.dart';
+import 'package:mafcode/ui/screens/main/profile/profile.dart';
 
 class EditProfile extends StatefulWidget {
   @override
@@ -24,7 +24,8 @@ class _EditProfileState extends State<EditProfile> {
             color: Colors.blue,
           ),
           onPressed: () {
-            Navigator.of(context).pop(MaterialPageRoute(builder: (BuildContext context) => Profile()));
+            Navigator.of(context).pop(MaterialPageRoute(
+                builder: (BuildContext context) => Profile()));
           },
         ),
       ),
@@ -65,19 +66,28 @@ class _EditProfileState extends State<EditProfile> {
                 children: [
                   OutlineButton(
                     padding: EdgeInsets.symmetric(horizontal: 50),
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     onPressed: () {},
-                    child: Text("CANCEL", style: TextStyle(fontSize: 14, letterSpacing: 2.2, color: Colors.black)),
+                    child: Text("CANCEL",
+                        style: TextStyle(
+                            fontSize: 14,
+                            letterSpacing: 2.2,
+                            color: Colors.black)),
                   ),
                   RaisedButton(
                     onPressed: () {},
                     color: Colors.blue,
                     padding: EdgeInsets.symmetric(horizontal: 50),
                     elevation: 2,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20)),
                     child: Text(
                       "SAVE",
-                      style: TextStyle(fontSize: 14, letterSpacing: 2.2, color: Colors.white),
+                      style: TextStyle(
+                          fontSize: 14,
+                          letterSpacing: 2.2,
+                          color: Colors.white),
                     ),
                   )
                 ],

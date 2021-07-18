@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:mafcode/ui/screens/main/Notifications/Notifications.dart';
-import 'package:mafcode/ui/screens/main/Profile/Profile.dart';
+import 'package:mafcode/ui/screens/main/notifications/notifications.dart';
+import 'package:mafcode/ui/screens/main/profile/profile.dart';
 import 'package:mafcode/ui/screens/main/home/home_page.dart';
 
 import 'map/map_page.dart';
