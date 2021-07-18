@@ -4,7 +4,6 @@ import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/network/api.dart';
 import 'package:mobx/mobx.dart';
 import 'package:no_context_navigation/no_context_navigation.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../auto_router_config.gr.dart';
 part 'report_screen_store.g.dart';

@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -62,7 +61,8 @@ class MapSampleState extends State<MapSample> {
               }).toList();
 
               return GoogleMap(
-                initialCameraPosition: CameraPosition(target: LatLng(40.7128, -74.0060), zoom: 1.0),
+                initialCameraPosition: CameraPosition(
+                    target: LatLng(40.7128, -74.0060), zoom: 1.0),
                 markers: Set.from(allMarkers),
                 mapType: MapType.normal,
                 tiltGesturesEnabled: true,

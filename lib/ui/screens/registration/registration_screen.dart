@@ -6,7 +6,6 @@ import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/network/api.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
-import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:validators/validators.dart';
 
 class RegistrationScreen extends StatefulHookWidget {
@@ -38,7 +37,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
 
   checkRegistrationInput() {
     bool correctEmail = isEmail(emailTextController.text);
-    bool correctPassword = equals(passwordTextController.text, confirmedPasswordTextController.text);
+    bool correctPassword = equals(
+        passwordTextController.text, confirmedPasswordTextController.text);
     bool passwordLength = isLength(
       passwordTextController.text,
       5,
@@ -138,7 +138,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                     textInputAction: TextInputAction.next,
                   ),
                   TextField(
-                    decoration: InputDecoration(labelText: "Contact Information"),
+                    decoration:
+                        InputDecoration(labelText: "Contact Information"),
                     controller: contactTextController,
                     textInputAction: TextInputAction.next,
                   ),
@@ -165,37 +166,52 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                         statusCode = checkRegistrationInput();
                         switch (statusCode) {
                           case 104:
-                            showMafcodeDialog(message: "Please enter a valid email", title: "Error");
+                            showMafcodeDialog(
+                                message: "Please enter a valid email",
+                                title: "Error");
                             break;
                           case 204:
-                            showMafcodeDialog(message: "The two passwords don't match", title: "Error!");
+                            showMafcodeDialog(
+                                message: "The two passwords don't match",
+                                title: "Error!");
                             break;
                           case 205:
                             showMafcodeDialog(
-                                message: "Please enter a password that is between 5 and 30 characters long",
+                                message:
+                                    "Please enter a password that is between 5 and 30 characters long",
                                 title: "Error");
                             break;
                           case 000:
                             try {
                               Map response = await registerUser(api);
-                              if (response["message"] == "This email already exists")
+                              if (response["message"] ==
+                                  "This email already exists")
                                 showMafcodeDialog(
-                                    message: "This email already exists, please enter a different email",
+                                    message:
+                                        "This email already exists, please enter a different email",
                                     title: "Error!");
-                              else if (response["message"] == "User added sucessfully") {
+                              else if (response["message"] ==
+                                  "User added sucessfully") {
                                 showMafcodeDialog(
-                                    message: "Registeration Done Successfully, Please login with your information",
+                                    message:
+                                        "Registeration Done Successfully, Please login with your information",
                                     title: "Success!");
-                                Future.delayed(Duration(milliseconds: 3000), () {
-                                  Navigator.of(context).pushReplacementNamed(Routes.loginScreen);
+                                Future.delayed(Duration(milliseconds: 3000),
+                                    () {
+                                  Navigator.of(context)
+                                      .pushReplacementNamed(Routes.loginScreen);
                                 });
                               }
                             } catch (e, stackTracke) {
-                              debugPrintStack(label: e.toString(), stackTrace: stackTracke);
+                              debugPrintStack(
+                                  label: e.toString(), stackTrace: stackTracke);
                               if (e is DioError && e.response != null) {
-                                showMafcodeDialog(message: e.response.data.toString(), title: "Server Error!");
+                                showMafcodeDialog(
+                                    message: e.response.data.toString(),
+                                    title: "Server Error!");
                               } else {
-                                showMafcodeDialog(message: e.toString(), title: "Error!");
+                                showMafcodeDialog(
+                                    message: e.toString(), title: "Error!");
                               }
                             }
                             break;

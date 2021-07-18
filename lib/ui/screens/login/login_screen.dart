@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/shared/logo_widget.dart';
-import 'package:modal_progress_hud/modal_progress_hud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginScreen extends HookWidget {
@@ -61,7 +60,8 @@ class LoginScreen extends HookWidget {
                       TextButton(
                         child: Text("Register"),
                         onPressed: () async {
-                          Navigator.of(context).pushNamed(Routes.registrationScreen);
+                          Navigator.of(context)
+                              .pushNamed(Routes.registrationScreen);
                         },
                       ),
                       Spacer(),
@@ -83,9 +83,12 @@ class LoginScreen extends HookWidget {
                                 emailController.text,
                                 passwordController.text,
                               );
-                              final sharedPref = await SharedPreferences.getInstance();
-                              sharedPref.setString('token', loginResult.accessToken);
-                              Navigator.of(context).pushReplacementNamed(Routes.mainScreen);
+                              final sharedPref =
+                                  await SharedPreferences.getInstance();
+                              sharedPref.setString(
+                                  'token', loginResult.accessToken);
+                              Navigator.of(context)
+                                  .pushReplacementNamed(Routes.mainScreen);
                               showSpinner.value = false;
                             } on Exception catch (e) {
                               print(e);
