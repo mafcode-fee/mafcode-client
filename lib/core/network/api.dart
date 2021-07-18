@@ -35,7 +35,7 @@ abstract class Api {
 
   @POST("/me/update")
   @FormUrlEncoded()
-  Future<HttpResponse> updateCurrentUserInfo({
+  Future<UserInfo> updateCurrentUserInfo({
     @required @Field() String email,
     @required @Field() String password,
     @required @Field("new_password") String newPassword,
@@ -46,7 +46,7 @@ abstract class Api {
 
   @POST("/me/update_photo")
   @MultiPart()
-  Future<HttpResponse> changeCurrentUserPhoto(
+  Future<UserInfo> changeCurrentUserPhoto(
     @Part(name: "image") File image,
   );
 
