@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/network/api.dart';
+import 'package:mafcode/ui/shared/network_image_widget.dart';
 
 const IP = "http://40.114.123.215:5000";
 
@@ -67,9 +68,8 @@ class MatchReportCard extends HookWidget {
       child: Stack(
         fit: StackFit.expand,
         children: [
-          Image.network(
+          NetworkImageWidget(
             api.getImageUrlFromId(report.photoId),
-            fit: BoxFit.cover,
           ),
           if (showName)
             Align(

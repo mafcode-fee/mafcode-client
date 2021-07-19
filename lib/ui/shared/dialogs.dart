@@ -35,5 +35,6 @@ Future<File> showImagePickerDialog(BuildContext context) async {
       ),
     ),
   );
+  if (pickedFile == null) return null;
   return File(pickedFile.path);
 }

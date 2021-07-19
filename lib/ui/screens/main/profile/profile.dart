@@ -8,6 +8,7 @@ import 'package:mafcode/ui/screens/main/profile/editProfile.dart';
 import 'package:mafcode/ui/screens/main/profile/profile_state_notifier.dart';
 import 'package:mafcode/ui/shared/dialogs.dart';
 import 'package:mafcode/ui/shared/error_utils.dart';
+import 'package:mafcode/ui/shared/network_image_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class Profile extends HookWidget {
@@ -79,20 +80,12 @@ class Profile extends HookWidget {
       );
     } else {
       final imageUrl = notifier.convertImageIdToUrl(imageId);
-      image = Image.network(
-        imageUrl,
-        fit: BoxFit.cover,
-      );
+      image = NetworkImageWidget(imageUrl);
     }
 
-    return GestureDetector(
-      onTap: () async {
-        final selectedFile = await showImagePickerDialog(context);
-        if (selectedFile == null) return;
-        notifier.uploadUserPhoto(selectedFile);
-      },
-      child: Center(
-        child: Stack(children: [
+    return Center(
+      child: Stack(
+        children: [
           Container(
             width: 130,
             height: 130,
@@ -109,23 +102,30 @@ class Profile extends HookWidget {
           Positioned(
               bottom: 0,
               right: 0,
-              child: Container(
-                height: 40,
-                width: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    width: 4,
-                    color: Theme.of(context).scaffoldBackgroundColor,
+              child: GestureDetector(
+                onTap: () async {
+                  final selectedFile = await showImagePickerDialog(context);
+                  if (selectedFile == null) return;
+                  notifier.uploadUserPhoto(selectedFile);
+                },
+                child: Container(
+                  height: 40,
+                  width: 40,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      width: 4,
+                      color: Theme.of(context).scaffoldBackgroundColor,
+                    ),
+                    color: Colors.blue,
                   ),
-                  color: Colors.blue,
-                ),
-                child: Icon(
-                  Icons.edit,
-                  color: Colors.white,
+                  child: Icon(
+                    Icons.edit,
+                    color: Colors.white,
+                  ),
                 ),
               )),
-        ]),
+        ],
       ),
     );
   }
