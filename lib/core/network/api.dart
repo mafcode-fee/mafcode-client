@@ -36,12 +36,12 @@ abstract class Api {
   @POST("/me/update")
   @FormUrlEncoded()
   Future<UserInfo> updateCurrentUserInfo({
-    @required @Field() String email,
-    @required @Field() String password,
-    @required @Field("new_password") String newPassword,
-    @required @Field("first_name") firstName,
-    @required @Field("last_name") String lastName,
-    @required @Field() String contact,
+    @Field() String email,
+    @Field() String password,
+    @Field("new_password") String newPassword,
+    @Field("first_name") firstName,
+    @Field("last_name") String lastName,
+    @Field() String contact,
   });
 
   @POST("/me/update_photo")
