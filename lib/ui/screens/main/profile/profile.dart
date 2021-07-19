@@ -4,11 +4,13 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/user_info.dart';
 import 'package:mafcode/core/network/api.dart';
+import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/screens/main/profile/editProfile.dart';
 import 'package:mafcode/ui/screens/main/profile/profile_state_notifier.dart';
 import 'package:mafcode/ui/shared/dialogs.dart';
 import 'package:mafcode/ui/shared/error_utils.dart';
 import 'package:mafcode/ui/shared/network_image_widget.dart';
+import 'package:mafcode/ui/shared/widget_utils.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class Profile extends HookWidget {
@@ -38,32 +40,84 @@ class Profile extends HookWidget {
   }
 
   Container buildBody(BuildContext context, UserInfo userInfo) {
+    final notifier = context.read(profileStateProvider);
     return Container(
       padding: EdgeInsets.only(left: 16, right: 16),
       child: GestureDetector(
         onTap: () {
           FocusScope.of(context).unfocus();
         },
-        child: ListView(children: [
-          IconButton(
-            icon: Container(
-              padding: EdgeInsets.only(left: 10, top: 10, right: 10),
-              alignment: Alignment.topRight,
-              child: Icon(
-                Icons.settings,
-                color: Colors.black,
-                size: 40.0,
+        child: ListView(
+          children: [
+            SizedBox(
+              height: 50,
+            ),
+            Row(
+              children: [
+                buildImage(context, userInfo.photoId),
+                SizedBox(width: 20),
+                Column(
+                  children: [
+                    Text(
+                      "${userInfo.firstName} ${userInfo.lastName}",
+                      style: TextStyle(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 20,
+                      ),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      "${userInfo.email}",
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Color(0xff989cb6),
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            ListTile(
+              leading: Icon(Icons.phone),
+              title: Text("Contact"),
+              subtitle: Text(userInfo.contact),
+            ),
+            Divider(),
+            OutlinedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(Routes.editProfile);
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.edit),
+                  SizedBox(width: 10),
+                  Text("Edit Profile"),
+                ],
               ),
             ),
-            onPressed: () {
-              Navigator.of(context).push(MaterialPageRoute(builder: (BuildContext context) => EditProfile()));
-            },
-          ),
-          buildImage(context, userInfo.photoId),
-          SizedBox(
-            height: 50,
-          ),
-        ]),
+            OutlinedButton(
+              onPressed: () async {
+                await notifier.logout();
+                Navigator.of(context).pushNamedAndRemoveUntil(Routes.loginScreen, (route) => false);
+              },
+              style: OutlinedButton.styleFrom(
+                primary: Colors.red,
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.exit_to_app),
+                  SizedBox(width: 10),
+                  Text("Sign out"),
+                ],
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }
