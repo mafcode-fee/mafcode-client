@@ -28,21 +28,23 @@ class MatchesScreen extends HookWidget {
       return null;
     }, []);
 
-    int fonudNumber = null;
+    int foundNumber = null;
 
     if (state is AsyncData) {
-      fonudNumber = (state as AsyncData).value.length;
+      foundNumber = (state as AsyncData).value.length;
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text("Matches" + (fonudNumber == null ? "" : " ($fonudNumber found)")),
+        title: Text(
+            "Matches" + (foundNumber == null ? "" : " ($foundNumber found)")),
       ),
       body: state.when(
         data: (matches) {
           if (matches.isEmpty)
             return Center(
-              child: Text("There are no matches for your report in the current moment"),
+              child: Text(
+                  "There are no matches for your report in the current moment"),
             );
           return ListView.builder(
             padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 16),

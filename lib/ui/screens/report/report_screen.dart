@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/ui/shared/dialogs.dart';
@@ -39,7 +38,8 @@ class ReportScreen extends HookWidget {
     return location;
   }
 
-  Future<void> showMafcodeDialog({String message, String title, BuildContext context}) async {
+  Future<void> showMafcodeDialog(
+      {String message, String title, BuildContext context}) async {
     return showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -79,7 +79,9 @@ class ReportScreen extends HookWidget {
     return Observer(
       builder: (context) => Scaffold(
         appBar: AppBar(
-          title: Text(reportType == ReportType.FOUND ? "Report Found" : "Report Missing"),
+          title: Text(reportType == ReportType.FOUND
+              ? "Report Found"
+              : "Report Missing"),
         ),
         body: ListView(
           padding: const EdgeInsets.all(24),
@@ -89,7 +91,8 @@ class ReportScreen extends HookWidget {
               height: 200,
               clipBehavior: Clip.hardEdge,
               decoration: BoxDecoration(
-                color: imageFile.value != null ? null : Colors.blueGrey.shade100,
+                color:
+                    imageFile.value != null ? null : Colors.blueGrey.shade100,
                 border: Border.all(color: Colors.grey),
                 shape: BoxShape.circle,
               ),
@@ -117,7 +120,8 @@ class ReportScreen extends HookWidget {
                 onPressed: () async {
                   final pickedFile = await showImagePickerDialog(context);
 
-                  if (pickedFile != null) imageFile.value = File(pickedFile.path);
+                  if (pickedFile != null)
+                    imageFile.value = File(pickedFile.path);
                 },
               ),
             ),
@@ -158,7 +162,8 @@ class ReportScreen extends HookWidget {
                     var location = await getLocation();
                     if (location is! LocationData)
                       showMafcodeDialog(
-                          message: "In order to get location automatically, you have to enable location permissions",
+                          message:
+                              "In order to get location automatically, you have to enable location permissions",
                           context: useContext());
                     else {
                       latitudeController.text = location.latitude.toString();
@@ -182,12 +187,15 @@ class ReportScreen extends HookWidget {
                     LocationData location = await getLocation();
                     if (location is! LocationData)
                       showMafcodeDialog(
-                          message: "In order to get location automatically, you have to enable location permissions",
+                          message:
+                              "In order to get location automatically, you have to enable location permissions",
                           context: useContext());
                     else {
                       var location = await getLocation();
-                      location = await Navigator.of(context).pushNamed(Routes.mapLocationPicker,
-                          arguments: MapLocationPickerArguments(locationData: location));
+                      location = await Navigator.of(context).pushNamed(
+                          Routes.mapLocationPicker,
+                          arguments: MapLocationPickerArguments(
+                              locationData: location));
                       latitudeController.text = location.latitude.toString();
                       longitudeController.text = location.longitude.toString();
                     }
