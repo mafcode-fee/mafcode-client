@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/network/api.dart';
+import 'package:mafcode/ui/shared/marker_generator.dart';
 
 class MapSample extends StatefulHookWidget {
   @override
@@ -29,7 +30,22 @@ class MapSampleState extends State<MapSample> {
   @override
   Widget build(BuildContext context) {
     final api = useProvider(apiProvider);
-    final Future<List<Report>> _future = useMemoized(() {
+    final foundMarker = useState(BitmapDescriptor.defaultMarker);
+    final missingMarker = useState(BitmapDescriptor.defaultMarker);
+    final Future<List<Report>> _future = useMemoized(() async {
+      final markerGenerator = MarkerGenerator(100);
+      foundMarker.value = await markerGenerator.createBitmapDescriptorFromIconData(
+        iconData: Icons.person,
+        iconColor: Colors.green,
+        circleColor: Colors.green,
+        backgroundColor: Colors.white,
+      );
+      missingMarker.value = await markerGenerator.createBitmapDescriptorFromIconData(
+        iconData: Icons.person,
+        iconColor: Colors.red,
+        circleColor: Colors.red,
+        backgroundColor: Colors.white,
+      );
       return api.getAllReports();
     });
     return Scaffold(
@@ -53,6 +69,7 @@ class MapSampleState extends State<MapSample> {
                   //infoWindow: InfoWindow(title: 'my name is nagwa'),
                   infoWindow: InfoWindow(title: ' ${report.name} , ${report.age} years old'),
                   onTap: () {},
+                  icon: report.reportType == ReportType.FOUND ? foundMarker.value : missingMarker.value,
                 );
               }).toList();
 
