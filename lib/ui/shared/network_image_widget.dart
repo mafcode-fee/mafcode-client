@@ -9,7 +9,10 @@ class NetworkImageWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return CachedNetworkImage(
       imageUrl: src,
-      placeholder: (context, url) => CircularProgressIndicator(),
+      placeholder: (context, url) => AspectRatio(
+        aspectRatio: 1,
+        child: CircularProgressIndicator(),
+      ),
       errorWidget: (context, url, error) => Icon(Icons.error),
       fit: BoxFit.cover,
     );

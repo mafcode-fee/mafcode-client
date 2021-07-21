@@ -7,6 +7,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/network/api.dart';
+import 'package:mafcode/ui/screens/main/home/reports_list_widget.dart';
 import 'package:mafcode/ui/shared/marker_generator.dart';
 
 class MapSample extends StatefulHookWidget {
@@ -67,8 +68,30 @@ class MapSampleState extends State<MapSample> {
                   markerId: MarkerId(report.id),
                   position: LatLng(report.latitude, report.longitude),
                   //infoWindow: InfoWindow(title: 'my name is nagwa'),
-                  infoWindow: InfoWindow(title: ' ${report.name} , ${report.age} years old'),
-                  onTap: () {},
+                  infoWindow: InfoWindow(
+                    title: report.reportType.toString().split(".").last.toLowerCase() + " report",
+                    snippet: '${report.name} , ${report.age} years old',
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (context) {
+                            return Dialog(
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  SizedBox(height: 15),
+                                  Text(
+                                    "Report Details",
+                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                                  ),
+                                  SizedBox(height: 15),
+                                  ReportWidget(report),
+                                ],
+                              ),
+                            );
+                          });
+                    },
+                  ),
                   icon: report.reportType == ReportType.FOUND ? foundMarker.value : missingMarker.value,
                 );
               }).toList();

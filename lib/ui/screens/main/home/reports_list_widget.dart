@@ -7,6 +7,7 @@ import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
 import 'package:mafcode/ui/screens/matches/matches_screen.dart';
 import 'package:mafcode/ui/shared/error_widget.dart';
+import 'package:mafcode/ui/shared/map_utils.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ReportsListWidget extends HookWidget {
@@ -137,14 +138,17 @@ class ReportWidget extends StatelessWidget {
             ),
           ],
         ),
-        Row(
+        Wrap(
+          spacing: 10,
+          alignment: WrapAlignment.center,
           children: [
             OutlinedButton.icon(
-              onPressed: () {},
+              onPressed: () {
+                MapUtils.openMap(report.latitude, report.longitude);
+              },
               icon: Icon(MdiIcons.mapSearch),
               label: Text("Open Location"),
             ),
-            Spacer(),
             OutlinedButton.icon(
               onPressed: () {},
               icon: Icon(MdiIcons.faceRecognition),
