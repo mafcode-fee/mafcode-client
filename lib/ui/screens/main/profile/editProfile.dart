@@ -98,6 +98,7 @@ class _EditProfileState extends State<EditProfile> {
               FocusScope.of(context).unfocus();
             },
             child: ListView(
+              padding: const EdgeInsets.symmetric(vertical: 50),
               children: [
                 Center(
                   child: Text(
@@ -187,6 +188,10 @@ class _EditProfileState extends State<EditProfile> {
                             newPassword2: newPassword2Controller.text);
 
                         validationError.value = error;
+
+                        if (error == null) {
+                          Navigator.of(context).pop();
+                        }
                       },
                       style: ButtonStyle(
                         backgroundColor: Colors.blue.asAllMaterialStateProperty(),

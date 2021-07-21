@@ -116,6 +116,9 @@ class ProfileStateNotifer extends StateNotifier<AsyncValue<UserInfo>> {
           contact: contact,
         ));
 
-    return null;
+    return state.maybeWhen(
+      error: (_, __) => validationError,
+      orElse: () => null,
+    );
   }
 }

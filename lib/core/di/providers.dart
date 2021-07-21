@@ -33,7 +33,7 @@ final dioProvider = Provider<Dio>((_) {
 
 final apiProvider = Provider((ref) => Api(
       ref.read(dioProvider),
-      baseUrl: "http://127.0.0.1:5000",
+      baseUrl: "http://10.0.2.2:5000",
     ));
 
 final lastReportsStoreProvider = Provider(
