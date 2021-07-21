@@ -3,6 +3,8 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/models/user_info.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
+import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
+import 'package:mafcode/ui/screens/main/home/reports_list_widget.dart';
 import 'package:mafcode/ui/screens/main/profile/profile_state_notifier.dart';
 import 'package:mafcode/ui/shared/dialogs.dart';
 import 'package:mafcode/ui/shared/error_widget.dart';
@@ -98,6 +100,11 @@ class Profile extends HookWidget {
               ),
             ),
             buildLogoutButton(notifier, context),
+            Divider(),
+            ReportsListWidget(
+              title: "My Reports",
+              reportsSource: ReportsSource.CURRENT_USER,
+            )
           ],
         ),
       ),

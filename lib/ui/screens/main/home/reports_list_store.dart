@@ -4,12 +4,18 @@ import 'package:mobx/mobx.dart';
 
 part 'reports_list_store.g.dart';
 
+enum ReportsSource {
+  ALL,
+  CURRENT_USER,
+}
+
 class ReportsListStore = _ReportsListStoreBase with _$ReportsListStore;
 
 abstract class _ReportsListStoreBase with Store {
   final Api _api;
+  final ReportsSource reportsSource;
 
-  _ReportsListStoreBase(this._api);
+  _ReportsListStoreBase(this._api, this.reportsSource);
 
   @observable
   ObservableFuture<List<Report>> lastReportsFuture = ObservableFuture.value([]);
@@ -21,10 +27,17 @@ abstract class _ReportsListStoreBase with Store {
   @computed
   bool get hasError => lastReportsFuture.status == FutureStatus.rejected;
   @computed
-  String get error => lastReportsFuture.error.toString();
+  dynamic get error => lastReportsFuture.error;
 
   @action
-  Future<void> getLastReports() async {
-    lastReportsFuture = _api.getAllReports().asObservable();
+  Future<void> getReports() async {
+    switch (reportsSource) {
+      case ReportsSource.ALL:
+        lastReportsFuture = _api.getAllReports().asObservable();
+        break;
+      case ReportsSource.CURRENT_USER:
+        lastReportsFuture = _api.getCurrentUserReports().asObservable();
+        break;
+    }
   }
 }

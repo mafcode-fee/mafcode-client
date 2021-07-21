@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
-import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
-import 'package:mafcode/ui/screens/matches/matches_screen.dart';
+import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
+import 'package:mafcode/ui/screens/main/home/reports_list_widget.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key key}) : super(key: key);
@@ -14,7 +13,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        await context.read(reportsListStoreProvider).getLastReports();
+        await context.read(reportsListStoreProvider(ReportsSource.ALL)).getReports();
       },
       child: ListView(
         padding: const EdgeInsets.all(24),
@@ -56,104 +55,13 @@ class HomePage extends StatelessWidget {
             ],
           ),
           SizedBox(height: 28),
-          LastReportsWidget()
+          ReportsListWidget(
+            title: "LAST REPORTS",
+            reportsSource: ReportsSource.ALL,
+          )
         ],
       ),
     );
-  }
-}
-
-class LastReportsWidget extends HookWidget {
-  const LastReportsWidget({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    final store = useProvider(reportsListStoreProvider);
-    useEffect(() {
-      store.getLastReports();
-      return null;
-    }, []);
-    return Observer(builder: (_) {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Text(
-            "LAST REPORTS",
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-              color: Colors.blueGrey,
-            ),
-          ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(Routes.matchesScreen,
-                    arguments: MatchesScreenArguments(reportId: "60f81f1d7d73b09cb0706614"));
-              },
-              child: Text("test")),
-          SizedBox(height: 28),
-          if (store.hasError)
-            Text(
-              store.error,
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.red),
-            )
-          else if (store.isLoading)
-            Center(
-              child: CircularProgressIndicator(),
-            )
-          else if (store.lastReports.isEmpty)
-            Center(
-              child: Text(
-                "Nothing here yet.\nFuture Reports will appear here.",
-                textAlign: TextAlign.center,
-              ),
-            )
-          else
-            ...store.lastReports.map(
-              (r) => Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              r.reportType.toString().split(".").last,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            Text("Name: ${r.name}"),
-                            SizedBox(height: 10),
-                            Text("Age: ${r.age.round()}"),
-                            if (r.clothings != null) ...[SizedBox(height: 10), Text("Clothings: ${r.clothings ?? ""}")],
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 100,
-                        height: 150,
-                        child: MatchReportCard(
-                          report: r,
-                          margin: EdgeInsets.all(8),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                ],
-              ),
-            ),
-        ],
-      );
-    });
   }
 }
 

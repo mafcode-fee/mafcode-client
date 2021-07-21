@@ -36,8 +36,8 @@ final apiProvider = Provider((ref) => Api(
       baseUrl: "http://10.0.2.2:5000",
     ));
 
-final reportsListStoreProvider = Provider(
-  (ref) => ReportsListStore(ref.read(apiProvider)),
+final reportsListStoreProvider = Provider.family<ReportsListStore, ReportsSource>(
+  (ref, source) => ReportsListStore(ref.read(apiProvider), source),
 );
 
 final reportScreenStoreProvider = Provider<ReportScreenStore>((ref) {
