@@ -37,7 +37,7 @@ class MapSampleState extends State<MapSample> {
         Container(
           height: MediaQuery.of(context).size.height,
           width: MediaQuery.of(context).size.width,
-          child: FutureBuilder(
+          child: FutureBuilder<List<Report>>(
             future: _future,
             builder: (context, AsyncSnapshot snapshot) {
               if (!snapshot.hasData) {
@@ -45,15 +45,13 @@ class MapSampleState extends State<MapSample> {
                   child: CircularProgressIndicator(),
                 );
               }
-              List<dynamic> parsedJson = snapshot.data;
-              allMarkers = parsedJson.map((i) {
-                String name = i['name'];
-                int age = i['age'];
+              List<Report> parsedJson = snapshot.data;
+              allMarkers = parsedJson.map((report) {
                 return Marker(
-                  markerId: MarkerId(i['id']),
-                  position: LatLng(i['latitude'], i['longitude']),
+                  markerId: MarkerId(report.id),
+                  position: LatLng(report.latitude, report.longitude),
                   //infoWindow: InfoWindow(title: 'my name is nagwa'),
-                  infoWindow: InfoWindow(title: ' $name , $age years old'),
+                  infoWindow: InfoWindow(title: ' ${report.name} , ${report.age} years old'),
                   onTap: () {},
                 );
               }).toList();

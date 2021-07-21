@@ -1,12 +1,12 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:mafcode/core/models/login_result.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/models/user_info.dart';
 import 'package:retrofit/retrofit.dart';
-import 'package:dio/dio.dart';
 
 part 'api.g.dart';
 
@@ -61,10 +61,10 @@ abstract class Api {
     @Part(name: "payload") String reportJsonString,
   );
 
-  @GET("/report/{reportId}")
+  @GET("/reports/{reportId}")
   Future<Report> getReport(@Path() String reportId);
 
-  @GET("/report/{reportId}/matchings")
+  @GET("/reports/{reportId}/matchings")
   Future<List<Report>> getmatchingReports(@Path() String reportId);
 }
 

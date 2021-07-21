@@ -12,48 +12,53 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ListView(
-      padding: const EdgeInsets.all(24),
-      children: [
-        Text(
-          "ACTIONS",
-          style: TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.blueGrey,
+    return RefreshIndicator(
+      onRefresh: () async {
+        await context.read(lastReportsStoreProvider).getLastReports();
+      },
+      child: ListView(
+        padding: const EdgeInsets.all(24),
+        children: [
+          Text(
+            "ACTIONS",
+            style: TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+              color: Colors.blueGrey,
+            ),
           ),
-        ),
-        SizedBox(height: 12),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            HomeCard(
-              lable: "Report Found",
-              icon: Icons.emoji_people_rounded,
-              color: Colors.blue,
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  Routes.reportScreen,
-                  arguments: ReportScreenArguments(reportType: ReportType.FOUND),
-                );
-              },
-            ),
-            HomeCard(
-              lable: "Report Missing",
-              icon: Icons.search_rounded,
-              color: Colors.purple,
-              onTap: () {
-                Navigator.of(context).pushNamed(
-                  Routes.reportScreen,
-                  arguments: ReportScreenArguments(reportType: ReportType.MISSING),
-                );
-              },
-            ),
-          ],
-        ),
-        SizedBox(height: 28),
-        LastReportsWidget()
-      ],
+          SizedBox(height: 12),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              HomeCard(
+                lable: "Report Found",
+                icon: Icons.emoji_people_rounded,
+                color: Colors.blue,
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    Routes.reportScreen,
+                    arguments: ReportScreenArguments(reportType: ReportType.FOUND),
+                  );
+                },
+              ),
+              HomeCard(
+                lable: "Report Missing",
+                icon: Icons.search_rounded,
+                color: Colors.purple,
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    Routes.reportScreen,
+                    arguments: ReportScreenArguments(reportType: ReportType.MISSING),
+                  );
+                },
+              ),
+            ],
+          ),
+          SizedBox(height: 28),
+          LastReportsWidget()
+        ],
+      ),
     );
   }
 }
@@ -82,6 +87,12 @@ class LastReportsWidget extends HookWidget {
               color: Colors.blueGrey,
             ),
           ),
+          ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamed(Routes.matchesScreen,
+                    arguments: MatchesScreenArguments(reportId: "60f81f1d7d73b09cb0706614"));
+              },
+              child: Text("test")),
           SizedBox(height: 28),
           if (store.hasError)
             Text(

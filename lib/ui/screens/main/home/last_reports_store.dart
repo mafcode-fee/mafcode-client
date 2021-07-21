@@ -1,6 +1,7 @@
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/network/api.dart';
 import 'package:mobx/mobx.dart';
+
 part 'last_reports_store.g.dart';
 
 class LastReportsStore = _LastReportsStoreBase with _$LastReportsStore;
@@ -23,7 +24,7 @@ abstract class _LastReportsStoreBase with Store {
   String get error => lastReportsFuture.error.toString();
 
   @action
-  void getLastReports() {
+  Future<void> getLastReports() async {
     lastReportsFuture = _api.getAllReports().asObservable();
   }
 }
