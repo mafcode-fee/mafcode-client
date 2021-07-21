@@ -16,9 +16,11 @@ class MafcodeErrorWidget extends StatelessWidget {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Text(
-            ErrorUtils.getMessage(error),
-            style: TextStyle(color: Colors.red),
+          Flexible(
+            child: Text(
+              ErrorUtils.getMessage(error),
+              style: TextStyle(color: Colors.red),
+            ),
           ),
           if (onReload != null)
             OutlinedButton(
