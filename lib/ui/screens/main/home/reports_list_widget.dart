@@ -3,11 +3,11 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
+import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
 import 'package:mafcode/ui/screens/matches/matches_screen.dart';
 import 'package:mafcode/ui/shared/error_widget.dart';
-
-import '../../../auto_router_config.gr.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class ReportsListWidget extends HookWidget {
   final String title;
@@ -38,12 +38,12 @@ class ReportsListWidget extends HookWidget {
               color: Colors.blueGrey,
             ),
           ),
-          ElevatedButton(
-              onPressed: () {
-                Navigator.of(context).pushNamed(Routes.matchesScreen,
-                    arguments: MatchesScreenArguments(reportId: "60f81f1d7d73b09cb0706614"));
-              },
-              child: Text("test")),
+          // ElevatedButton(
+          //     onPressed: () {
+          //       Navigator.of(context).pushNamed(Routes.matchesScreen,
+          //           arguments: MatchesScreenArguments(reportId: "60f81f1d7d73b09cb0706614"));
+          //     },
+          //     child: Text("test")),
           SizedBox(height: 28),
           if (store.hasError)
             MafcodeErrorWidget(
@@ -63,46 +63,108 @@ class ReportsListWidget extends HookWidget {
             )
           else
             ...store.lastReports.map(
-              (r) => Column(
-                children: [
-                  Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.stretch,
-                          children: [
-                            Text(
-                              r.reportType.toString().split(".").last,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            SizedBox(height: 20),
-                            Text("Name: ${r.name}"),
-                            SizedBox(height: 10),
-                            Text("Age: ${r.age.round()}"),
-                            if (r.clothings != null) ...[SizedBox(height: 10), Text("Clothings: ${r.clothings ?? ""}")],
-                          ],
-                        ),
-                      ),
-                      Container(
-                        width: 100,
-                        height: 150,
-                        child: MatchReportCard(
-                          report: r,
-                          margin: EdgeInsets.all(8),
-                        ),
-                      ),
-                    ],
-                  ),
-                  Divider(),
-                ],
-              ),
+              (r) => ReportWidget(r),
             ),
         ],
       );
     });
+  }
+}
+
+class ReportWidget extends StatelessWidget {
+  final Report report;
+
+  const ReportWidget(
+    this.report, {
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    IconData icon = report.reportType == ReportType.FOUND ? MdiIcons.mapMarker : MdiIcons.accountSearch;
+    Color color = report.reportType == ReportType.FOUND ? Colors.green : Colors.red;
+    return Column(
+      children: [
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Icon(
+                        icon,
+                        color: color,
+                      ),
+                      SizedBox(width: 10),
+                      Text(
+                        report.reportType.toString().split(".").last,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 10),
+                  Table(
+                    columnWidths: {
+                      0: FixedColumnWidth(40),
+                      1: FixedColumnWidth(65),
+                      3: FlexColumnWidth(),
+                    },
+                    defaultVerticalAlignment: TableCellVerticalAlignment.middle,
+                    children: [
+                      buildInfoRow(Icons.drive_file_rename_outline, "Name", report.name),
+                      buildInfoRow(Icons.person, "Age", report.age?.toString()),
+                      buildInfoRow(MdiIcons.tshirtV, "Clothes", report.clothings),
+                      buildInfoRow(MdiIcons.note, "Notes", report.notes),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+            Container(
+              width: 100,
+              height: 150,
+              child: MatchReportCard(
+                report: report,
+                margin: EdgeInsets.all(8),
+              ),
+            ),
+          ],
+        ),
+        Row(
+          children: [
+            OutlinedButton.icon(
+              onPressed: () {},
+              icon: Icon(MdiIcons.mapSearch),
+              label: Text("Open Location"),
+            ),
+            Spacer(),
+            OutlinedButton.icon(
+              onPressed: () {},
+              icon: Icon(MdiIcons.faceRecognition),
+              label: Text("Matching Reports"),
+            ),
+          ],
+        ),
+        Divider(),
+      ],
+    );
+  }
+
+  TableRow buildInfoRow(IconData icon, String lable, String info) {
+    return TableRow(children: [
+      Icon(icon),
+      Text(
+        lable,
+        style: TextStyle(fontWeight: FontWeight.w500),
+      ),
+      Text(info == null || info.trim().isEmpty ? "---" : info),
+    ]);
   }
 }
