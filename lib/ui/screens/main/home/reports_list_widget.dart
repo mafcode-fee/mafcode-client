@@ -28,12 +28,19 @@ class ReportsListWidget extends HookWidget {
       store.getReports();
       return null;
     }, []);
+
+    String prefix = "";
+
+    if (store.lastReports != null && store.lastReports.isNotEmpty) {
+      prefix = " (${store.lastReports.length} report)";
+    }
+
     return Observer(builder: (_) {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Text(
-            title,
+            title + prefix,
             style: TextStyle(
               fontSize: 18,
               fontWeight: FontWeight.bold,
