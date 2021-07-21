@@ -1,16 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/user_info.dart';
-import 'package:mafcode/core/network/api.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
-import 'package:mafcode/ui/screens/main/profile/editProfile.dart';
 import 'package:mafcode/ui/screens/main/profile/profile_state_notifier.dart';
 import 'package:mafcode/ui/shared/dialogs.dart';
-import 'package:mafcode/ui/shared/error_utils.dart';
+import 'package:mafcode/ui/shared/error_widget.dart';
 import 'package:mafcode/ui/shared/network_image_widget.dart';
-import 'package:mafcode/ui/shared/widget_utils.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 class Profile extends HookWidget {
@@ -30,8 +26,10 @@ class Profile extends HookWidget {
         ),
         error: (err, stk) {
           debugPrintStack(label: err.toString(), stackTrace: stk);
-          return Center(
-            child: Text("Error ${ErrorUtils.getMessage(err)}"),
+          return MafcodeErrorWidget(
+            err,
+            onReload: () => notifer.loadUserInfo(),
+            extraWidgets: [buildLogoutButton(notifer, context)],
           );
         },
         data: (userInfo) => buildBody(context, userInfo),
@@ -99,25 +97,29 @@ class Profile extends HookWidget {
                 ],
               ),
             ),
-            OutlinedButton(
-              onPressed: () async {
-                await notifier.logout();
-                Navigator.of(context).pushNamedAndRemoveUntil(Routes.loginScreen, (route) => false);
-              },
-              style: OutlinedButton.styleFrom(
-                primary: Colors.red,
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.exit_to_app),
-                  SizedBox(width: 10),
-                  Text("Sign out"),
-                ],
-              ),
-            ),
+            buildLogoutButton(notifier, context),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget buildLogoutButton(ProfileStateNotifer notifier, BuildContext context) {
+    return OutlinedButton(
+      onPressed: () async {
+        await notifier.logout();
+        Navigator.of(context).pushNamedAndRemoveUntil(Routes.loginScreen, (route) => false);
+      },
+      style: OutlinedButton.styleFrom(
+        primary: Colors.red,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(Icons.exit_to_app),
+          SizedBox(width: 10),
+          Text("Sign out"),
+        ],
       ),
     );
   }

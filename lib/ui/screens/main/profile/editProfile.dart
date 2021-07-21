@@ -3,7 +3,7 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/ui/screens/main/profile/profile.dart';
 import 'package:mafcode/ui/screens/main/profile/profile_state_notifier.dart';
-import 'package:mafcode/ui/shared/error_utils.dart';
+import 'package:mafcode/ui/shared/error_widget.dart';
 import 'package:mafcode/ui/shared/widget_utils.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
@@ -86,8 +86,9 @@ class _EditProfileState extends State<EditProfile> {
         ),
         error: (err, stk) {
           debugPrintStack(label: err.toString(), stackTrace: stk);
-          return Center(
-            child: Text("Error ${ErrorUtils.getMessage(err)}"),
+          return MafcodeErrorWidget(
+            err,
+            onReload: () => notifer.loadUserInfo(),
           );
         },
         data: (userInfo) => Container(
@@ -220,7 +221,7 @@ class _EditProfileState extends State<EditProfile> {
       padding: const EdgeInsets.only(bottom: 35.0),
       child: TextField(
         controller: controller,
-        obscureText: isPasswordTextField ? showPassword : false,
+        obscureText: isPasswordTextField && !showPassword,
         decoration: InputDecoration(
           errorText: error,
           prefixIcon: icon == null ? null : Icon(icon),

@@ -161,7 +161,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               title: "Success!");
 
                           Future.delayed(Duration(milliseconds: 2000), () {
-                            Navigator.of(context).pushReplacementNamed(Routes.loginScreen);
+                            Navigator.of(context).pushNamedAndRemoveUntil(Routes.loginScreen, (_) => false);
                           });
                         } catch (e, stackTracke) {
                           debugPrintStack(label: e.toString(), stackTrace: stackTracke);
