@@ -4,6 +4,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/network/api.dart';
+import 'package:mafcode/ui/screens/main/home/reports_list_widget.dart';
 import 'package:mafcode/ui/screens/matches/matches_notifier.dart';
 import 'package:mafcode/ui/shared/error_widget.dart';
 import 'package:mafcode/ui/shared/network_image_widget.dart';
@@ -27,9 +28,15 @@ class MatchesScreen extends HookWidget {
       return null;
     }, []);
 
+    int fonudNumber = null;
+
+    if (state is AsyncData) {
+      fonudNumber = (state as AsyncData).value.length;
+    }
+
     return Scaffold(
       appBar: AppBar(
-        title: Text("Matches"),
+        title: Text("Matches" + (fonudNumber == null ? "" : " ($fonudNumber found)")),
       ),
       body: state.when(
         data: (matches) {
@@ -37,15 +44,13 @@ class MatchesScreen extends HookWidget {
             return Center(
               child: Text("There are no matches for your report in the current moment"),
             );
-          return GridView.builder(
-            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-              crossAxisCount: 2,
-              childAspectRatio: 2 / 3,
-            ),
+          return ListView.builder(
+            padding: const EdgeInsets.symmetric(vertical: 25, horizontal: 16),
             itemCount: matches.length,
             itemBuilder: (context, index) {
-              return MatchReportCard(
-                report: matches[index],
+              return ReportWidget(
+                matches[index],
+                hideMatchingButton: true,
               );
             },
           );

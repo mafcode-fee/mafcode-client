@@ -4,6 +4,7 @@ import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
+import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
 import 'package:mafcode/ui/screens/matches/matches_screen.dart';
 import 'package:mafcode/ui/shared/error_widget.dart';
@@ -74,9 +75,11 @@ class ReportsListWidget extends HookWidget {
 
 class ReportWidget extends StatelessWidget {
   final Report report;
+  final bool hideMatchingButton;
 
   const ReportWidget(
     this.report, {
+    this.hideMatchingButton = false,
     Key key,
   }) : super(key: key);
 
@@ -149,11 +152,15 @@ class ReportWidget extends StatelessWidget {
               icon: Icon(MdiIcons.mapSearch),
               label: Text("Open Location"),
             ),
-            OutlinedButton.icon(
-              onPressed: () {},
-              icon: Icon(MdiIcons.faceRecognition),
-              label: Text("Matching Reports"),
-            ),
+            if (!hideMatchingButton)
+              OutlinedButton.icon(
+                onPressed: () {
+                  Navigator.of(context)
+                      .pushNamed(Routes.matchesScreen, arguments: MatchesScreenArguments(reportId: report.id));
+                },
+                icon: Icon(MdiIcons.faceRecognition),
+                label: Text("Matching Reports"),
+              ),
           ],
         ),
         Divider(),
