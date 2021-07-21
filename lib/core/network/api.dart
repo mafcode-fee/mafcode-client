@@ -53,6 +53,9 @@ abstract class Api {
   @GET("/reports")
   Future<List<Report>> getAllReports();
 
+  @GET("/me/reports")
+  Future<List<Report>> getCurrentUserReports();
+
   @POST("/reports/{reportType}")
   @MultiPart()
   Future<Report> createReportJsonString(

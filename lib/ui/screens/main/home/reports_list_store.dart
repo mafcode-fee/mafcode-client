@@ -2,14 +2,14 @@ import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/core/network/api.dart';
 import 'package:mobx/mobx.dart';
 
-part 'last_reports_store.g.dart';
+part 'reports_list_store.g.dart';
 
-class LastReportsStore = _LastReportsStoreBase with _$LastReportsStore;
+class ReportsListStore = _ReportsListStoreBase with _$ReportsListStore;
 
-abstract class _LastReportsStoreBase with Store {
+abstract class _ReportsListStoreBase with Store {
   final Api _api;
 
-  _LastReportsStoreBase(this._api);
+  _ReportsListStoreBase(this._api);
 
   @observable
   ObservableFuture<List<Report>> lastReportsFuture = ObservableFuture.value([]);

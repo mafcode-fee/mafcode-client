@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return RefreshIndicator(
       onRefresh: () async {
-        await context.read(lastReportsStoreProvider).getLastReports();
+        await context.read(reportsListStoreProvider).getLastReports();
       },
       child: ListView(
         padding: const EdgeInsets.all(24),
@@ -70,7 +70,7 @@ class LastReportsWidget extends HookWidget {
 
   @override
   Widget build(BuildContext context) {
-    final store = useProvider(lastReportsStoreProvider);
+    final store = useProvider(reportsListStoreProvider);
     useEffect(() {
       store.getLastReports();
       return null;

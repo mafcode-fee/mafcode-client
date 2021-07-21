@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:mafcode/core/network/api.dart';
-import 'package:mafcode/ui/screens/main/home/last_reports_store.dart';
+import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
 import 'package:mafcode/ui/screens/report/report_screen_store.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 import 'package:riverpod/riverpod.dart';
@@ -36,8 +36,8 @@ final apiProvider = Provider((ref) => Api(
       baseUrl: "http://10.0.2.2:5000",
     ));
 
-final lastReportsStoreProvider = Provider(
-  (ref) => LastReportsStore(ref.read(apiProvider)),
+final reportsListStoreProvider = Provider(
+  (ref) => ReportsListStore(ref.read(apiProvider)),
 );
 
 final reportScreenStoreProvider = Provider<ReportScreenStore>((ref) {
