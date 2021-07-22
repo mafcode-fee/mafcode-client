@@ -21,7 +21,7 @@ abstract class _ReportsListStoreBase with Store {
   ObservableFuture<List<Report>> lastReportsFuture = ObservableFuture.value([]);
 
   @computed
-  List<Report> get lastReports => lastReportsFuture.value;
+  List<Report> get lastReports => lastReportsFuture.value?.reversed?.toList();
   @computed
   bool get isLoading => lastReportsFuture.status == FutureStatus.pending;
   @computed
@@ -29,15 +29,26 @@ abstract class _ReportsListStoreBase with Store {
   @computed
   dynamic get error => lastReportsFuture.error;
 
-  @action
-  Future<void> getReports() async {
+  bool get shouldShowDeleteButton => reportsSource == ReportsSource.CURRENT_USER;
+
+  Future<List<Report>> _getReportFut() {
     switch (reportsSource) {
       case ReportsSource.ALL:
-        lastReportsFuture = _api.getAllReports().asObservable();
+        return _api.getAllReports().asObservable();
         break;
       case ReportsSource.CURRENT_USER:
-        lastReportsFuture = _api.getCurrentUserReports().asObservable();
+        return _api.getCurrentUserReports().asObservable();
         break;
     }
+  }
+
+  @action
+  Future<void> getReports() async {
+    lastReportsFuture = _getReportFut().asObservable();
+  }
+
+  @action
+  Future<void> deleteReport(Report report) async {
+    lastReportsFuture = _api.removeReport(report.id).then((value) => _getReportFut()).asObservable();
   }
 }

@@ -72,6 +72,9 @@ abstract class Api {
   @GET("/reports/{reportId}")
   Future<Report> getReport(@Path() String reportId);
 
+  @DELETE("/reports/{reportId}")
+  Future<Report> removeReport(@Path() String reportId);
+
   @GET("/reports/{reportId}/matchings")
   Future<List<Report>> getmatchingReports(@Path() String reportId);
 }

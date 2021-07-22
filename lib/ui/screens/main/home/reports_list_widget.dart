@@ -76,6 +76,7 @@ class ReportsListWidget extends HookWidget {
               (r) => ReportWidget(
                 r,
                 showReporterButton: reportsSource != ReportsSource.CURRENT_USER,
+                onDelete: !store.shouldShowDeleteButton ? null : (r) => store.deleteReport(r),
               ),
             ),
         ],
@@ -90,11 +91,13 @@ class ReportWidget extends StatelessWidget {
   final Report report;
   final bool hideMatchingButton;
   final bool showReporterButton;
+  final Function(Report) onDelete;
 
   const ReportWidget(
     this.report, {
     this.hideMatchingButton = false,
     this.showReporterButton = true,
+    this.onDelete,
     Key key,
   }) : super(key: key);
 
@@ -114,6 +117,17 @@ class ReportWidget extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
+                      if (onDelete != null)
+                        TextButton.icon(
+                          onPressed: () => onDelete(report),
+                          icon: Icon(MdiIcons.trashCanOutline),
+                          style: TextButton.styleFrom(
+                            primary: Colors.red,
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          label: Text("Delete"),
+                        ),
+                      Spacer(),
                       Icon(
                         icon,
                         color: color,
@@ -126,6 +140,7 @@ class ReportWidget extends StatelessWidget {
                           fontWeight: FontWeight.bold,
                         ),
                       ),
+                      Spacer(),
                     ],
                   ),
                   SizedBox(height: 10),

@@ -1,15 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
 import 'package:mafcode/ui/screens/main/home/reports_list_widget.dart';
 
-class MyReports extends StatefulWidget {
-  MyReports({Key key}) : super(key: key);
-
-  _MyReportsState createState() => _MyReportsState();
-}
-
-class _MyReportsState extends State<MyReports> {
-  bool hasNotification = false;
+class MyReports extends HookWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
