@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/user_info.dart';
+import 'package:mafcode/core/network/api.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
 import 'package:mafcode/ui/screens/main/home/reports_list_widget.dart';
@@ -10,6 +14,7 @@ import 'package:mafcode/ui/shared/dialogs.dart';
 import 'package:mafcode/ui/shared/error_widget.dart';
 import 'package:mafcode/ui/shared/network_image_widget.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class Profile extends HookWidget {
   @override
@@ -50,40 +55,13 @@ class Profile extends HookWidget {
         child: ListView(
           children: [
             SizedBox(
-              height: 50,
+              height: 12,
             ),
-            Row(
-              children: [
-                buildImage(context, userInfo.photoId),
-                SizedBox(width: 20),
-                Column(
-                  children: [
-                    Text(
-                      "${userInfo.firstName} ${userInfo.lastName}",
-                      style: TextStyle(
-                        fontWeight: FontWeight.w500,
-                        fontSize: 20,
-                      ),
-                    ),
-                    SizedBox(height: 10),
-                    Text(
-                      "${userInfo.email}",
-                      style: TextStyle(
-                        fontSize: 14,
-                        color: Color(0xff989cb6),
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-            SizedBox(
-              height: 20,
-            ),
-            ListTile(
-              leading: Icon(Icons.phone),
-              title: Text("Contact"),
-              subtitle: Text(userInfo.contact),
+            ProfilePreview(
+              userInfo: userInfo,
+              onEditPhoto: (file) {
+                notifier.uploadUserPhoto(file);
+              },
             ),
             Divider(),
             OutlinedButton(
@@ -130,9 +108,98 @@ class Profile extends HookWidget {
       ),
     );
   }
+}
 
-  Widget buildImage(BuildContext context, String imageId) {
-    final notifier = context.read(profileStateProvider);
+class ProfilePreview extends StatelessWidget {
+  final UserInfo userInfo;
+  final Function(File file) onEditPhoto;
+  final bool showContactButtons;
+
+  const ProfilePreview({
+    Key key,
+    @required this.userInfo,
+    this.onEditPhoto,
+    this.showContactButtons = false,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Row(
+          children: [
+            ProfilePreviewImage(
+              imageId: userInfo.photoId,
+              onEditPhoto: onEditPhoto,
+            ),
+            SizedBox(width: 20),
+            Column(
+              children: [
+                Text(
+                  "${userInfo.firstName} ${userInfo.lastName}",
+                  style: TextStyle(
+                    fontWeight: FontWeight.w500,
+                    fontSize: 20,
+                  ),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  "${userInfo.email}",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Color(0xff989cb6),
+                  ),
+                ),
+              ],
+            )
+          ],
+        ),
+        SizedBox(
+          height: 20,
+        ),
+        ListTile(
+          leading: Icon(Icons.phone),
+          title: Text("Contact"),
+          subtitle: Text(userInfo.contact),
+          trailing: !showContactButtons
+              ? null
+              : ElevatedButton(
+                  child: Text("Call"),
+                  onPressed: () {
+                    launch("tel:${userInfo.contact}");
+                  },
+                ),
+        ),
+        if (showContactButtons)
+          ListTile(
+            leading: Icon(Icons.email),
+            title: Text("Email"),
+            subtitle: Text(userInfo.email),
+            trailing: ElevatedButton(
+              child: Text("Send"),
+              onPressed: () {
+                launch("mailto:${userInfo.email}");
+              },
+            ),
+          )
+      ],
+    );
+  }
+}
+
+class ProfilePreviewImage extends HookWidget {
+  final Function(File file) onEditPhoto;
+  final String imageId;
+
+  const ProfilePreviewImage({
+    Key key,
+    this.onEditPhoto,
+    @required this.imageId,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final api = useProvider(apiProvider);
     Widget image;
 
     if (imageId == null) {
@@ -142,7 +209,7 @@ class Profile extends HookWidget {
         color: Colors.grey,
       );
     } else {
-      final imageUrl = notifier.convertImageIdToUrl(imageId);
+      final imageUrl = api.getImageUrlFromId(imageId);
       image = NetworkImageWidget(imageUrl);
     }
 
@@ -162,14 +229,15 @@ class Profile extends HookWidget {
             clipBehavior: Clip.antiAlias,
             child: image,
           ),
-          Positioned(
+          if (onEditPhoto != null)
+            Positioned(
               bottom: 0,
               right: 0,
               child: GestureDetector(
                 onTap: () async {
                   final selectedFile = await showImagePickerDialog(context);
                   if (selectedFile == null) return;
-                  notifier.uploadUserPhoto(selectedFile);
+                  onEditPhoto(selectedFile);
                 },
                 child: Container(
                   height: 40,
@@ -187,7 +255,8 @@ class Profile extends HookWidget {
                     color: Colors.white,
                   ),
                 ),
-              )),
+              ),
+            ),
         ],
       ),
     );
