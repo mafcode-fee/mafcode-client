@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_mobx/flutter_mobx.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
@@ -81,6 +82,8 @@ class ReportsListWidget extends HookWidget {
   }
 }
 
+final _dateFormat = new DateFormat('yyyy-MM-dd hh:mm a');
+
 class ReportWidget extends StatelessWidget {
   final Report report;
   final bool hideMatchingButton;
@@ -132,6 +135,7 @@ class ReportWidget extends StatelessWidget {
                     },
                     defaultVerticalAlignment: TableCellVerticalAlignment.middle,
                     children: [
+                      buildInfoRow(Icons.date_range, "Date", _dateFormat.format(report.createdDate)),
                       buildInfoRow(Icons.drive_file_rename_outline, "Name", report.name),
                       buildInfoRow(Icons.person, "Age", report.age?.toString()),
                       buildInfoRow(MdiIcons.tshirtV, "Clothes", report.clothings),

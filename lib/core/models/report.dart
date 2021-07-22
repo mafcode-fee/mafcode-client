@@ -1,4 +1,5 @@
 import 'package:json_annotation/json_annotation.dart';
+import 'package:mafcode/ui/shared/mongo_id_utils.dart';
 
 part 'report.g.dart';
 
@@ -47,6 +48,8 @@ class Report {
     this.matchedReportsIds,
     this.creatorId,
   });
+
+  DateTime get createdDate => MongoIdUtils.getTimeFromObjectId(id);
 
   factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);
   Map<String, dynamic> toJson() => _$ReportToJson(this);
