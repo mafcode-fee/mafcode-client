@@ -31,6 +31,8 @@ class Report {
   @JsonKey(name: "clothing")
   final String clothings;
   final String notes;
+  @JsonKey(name: "creator")
+  final String creatorId;
 
   Report({
     this.id,
@@ -43,6 +45,7 @@ class Report {
     this.clothings,
     this.notes,
     this.matchedReportsIds,
+    this.creatorId,
   });
 
   factory Report.fromJson(Map<String, dynamic> json) => _$ReportFromJson(json);

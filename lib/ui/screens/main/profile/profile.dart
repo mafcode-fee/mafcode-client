@@ -110,6 +110,34 @@ class Profile extends HookWidget {
   }
 }
 
+class ProfilePreviewLoader extends HookWidget {
+  final String userId;
+  final bool showContactButtons;
+
+  const ProfilePreviewLoader({
+    Key key,
+    @required this.userId,
+    this.showContactButtons = true,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final api = useProvider(apiProvider);
+    final fut = useMemoized(() => api.getUserById(userId));
+    final userInfoSnapshot = useFuture(fut);
+    if (userInfoSnapshot.connectionState != ConnectionState.done)
+      return Center(
+        child: CircularProgressIndicator(),
+      );
+    if (userInfoSnapshot.hasError) return MafcodeErrorWidget(userInfoSnapshot.error);
+
+    return ProfilePreview(
+      userInfo: userInfoSnapshot.data,
+      showContactButtons: showContactButtons,
+    );
+  }
+}
+
 class ProfilePreview extends StatelessWidget {
   final UserInfo userInfo;
   final Function(File file) onEditPhoto;

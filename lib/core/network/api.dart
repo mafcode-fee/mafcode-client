@@ -44,6 +44,11 @@ abstract class Api {
     @Field() String contact,
   });
 
+  @GET("/user/{userId}")
+  Future<UserInfo> getUserById(
+    @Path("userId") String userId,
+  );
+
   @POST("/me/update_photo")
   @MultiPart()
   Future<UserInfo> changeCurrentUserPhoto(
@@ -85,9 +90,7 @@ extension ApiExt on Api {
         json.encode(report.toJson()),
       );
 
-  Future<Report> createMissingReport(Report report, File image) =>
-      createReport(ReportType.MISSING, report, image);
+  Future<Report> createMissingReport(Report report, File image) => createReport(ReportType.MISSING, report, image);
 
-  Future<Report> createFoundReport(Report report, File image) =>
-      createReport(ReportType.FOUND, report, image);
+  Future<Report> createFoundReport(Report report, File image) => createReport(ReportType.FOUND, report, image);
 }

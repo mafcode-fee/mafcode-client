@@ -6,6 +6,7 @@ import 'package:mafcode/core/di/providers.dart';
 import 'package:mafcode/core/models/report.dart';
 import 'package:mafcode/ui/auto_router_config.gr.dart';
 import 'package:mafcode/ui/screens/main/home/reports_list_store.dart';
+import 'package:mafcode/ui/screens/main/profile/profile.dart';
 import 'package:mafcode/ui/screens/matches/matches_screen.dart';
 import 'package:mafcode/ui/shared/error_widget.dart';
 import 'package:mafcode/ui/shared/map_utils.dart';
@@ -83,10 +84,12 @@ class ReportsListWidget extends HookWidget {
 class ReportWidget extends StatelessWidget {
   final Report report;
   final bool hideMatchingButton;
+  final bool showReporterButton;
 
   const ReportWidget(
     this.report, {
     this.hideMatchingButton = false,
+    this.showReporterButton = true,
     Key key,
   }) : super(key: key);
 
@@ -167,6 +170,33 @@ class ReportWidget extends StatelessWidget {
                 },
                 icon: Icon(MdiIcons.faceRecognition),
                 label: Text("Matching Reports"),
+              ),
+            if (showReporterButton)
+              OutlinedButton.icon(
+                onPressed: () {
+                  showDialog(
+                    context: context,
+                    builder: (context) => Dialog(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          SizedBox(height: 10),
+                          Text(
+                            "Report Creator",
+                            style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                          ),
+                          SizedBox(height: 5),
+                          ProfilePreviewLoader(
+                            userId: report.creatorId,
+                            showContactButtons: true,
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+                icon: Icon(MdiIcons.contacts),
+                label: Text("Contact Reporter"),
               ),
           ],
         ),
