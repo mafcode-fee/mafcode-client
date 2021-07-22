@@ -73,7 +73,10 @@ class ReportsListWidget extends HookWidget {
             )
           else
             ...store.lastReports.map(
-              (r) => ReportWidget(r),
+              (r) => ReportWidget(
+                r,
+                showReporterButton: reportsSource != ReportsSource.CURRENT_USER,
+              ),
             ),
         ],
       );

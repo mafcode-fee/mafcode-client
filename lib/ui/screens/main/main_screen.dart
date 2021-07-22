@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:mafcode/ui/screens/main/notifications/notifications.dart';
-import 'package:mafcode/ui/screens/main/profile/profile.dart';
 import 'package:mafcode/ui/screens/main/home/home_page.dart';
+import 'package:mafcode/ui/screens/main/profile/profile.dart';
 
 import 'map/map_page.dart';
+import 'my_reports/my_reports.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key key}) : super(key: key);
@@ -42,7 +42,7 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           HomePage(),
           MapSample(),
-          Notifications(),
+          MyReports(),
           Profile(),
         ],
       ),
@@ -69,8 +69,8 @@ class _MainScreenState extends State<MainScreen> {
             label: "Map",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.notifications),
-            label: "Notifications",
+            icon: Icon(Icons.image_search_sharp),
+            label: "My Reports",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_rounded),
