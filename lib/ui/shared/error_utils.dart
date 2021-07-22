@@ -4,10 +4,11 @@ class ErrorUtils {
   static String getMessage(dynamic e) {
     if (e is DioError) {
       if (e.type == DioErrorType.RESPONSE) {
-        if (e.response is Map) {
+        try {
           return e.response.data["message"];
+        } catch (e) {
+          return e.response.data.toString();
         }
-        return e.response.data.toString();
       } else {
         return e.message;
       }

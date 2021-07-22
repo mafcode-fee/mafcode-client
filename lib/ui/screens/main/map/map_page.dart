@@ -34,7 +34,7 @@ class MapSampleState extends State<MapSample> {
     final foundMarker = useState(BitmapDescriptor.defaultMarker);
     final missingMarker = useState(BitmapDescriptor.defaultMarker);
     final Future<List<Report>> _future = useMemoized(() async {
-      final markerGenerator = MarkerGenerator(100);
+      final markerGenerator = MarkerGenerator(70);
       foundMarker.value = await markerGenerator.createBitmapDescriptorFromIconData(
         iconData: Icons.person,
         iconColor: Colors.green,
@@ -43,7 +43,7 @@ class MapSampleState extends State<MapSample> {
       );
       missingMarker.value = await markerGenerator.createBitmapDescriptorFromIconData(
         iconData: Icons.person,
-        iconColor: Colors.red,
+        iconColor: Colors.grey,
         circleColor: Colors.red,
         backgroundColor: Colors.white,
       );
