@@ -33,11 +33,10 @@ class ReportsListWidget extends HookWidget {
 
     String prefix = "";
 
-    if (store.lastReports != null && store.lastReports.isNotEmpty) {
-      prefix = " (${store.lastReports.length} report)";
-    }
-
     return Observer(builder: (_) {
+      if (store.lastReports != null && store.lastReports.isNotEmpty) {
+        prefix = " (${store.lastReports.length} reports)";
+      }
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
